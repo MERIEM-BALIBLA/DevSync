@@ -1,4 +1,4 @@
-package org.example;
+package org.example.servlet;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -10,12 +10,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.model.User;
-import org.example.repository.UserRepository;
+import org.example.repository.implementation.UserRepository;
 
 import java.io.IOException;
 //import jakarta.io.IOException;
 
-@WebServlet(name = "myServlet", value = "/")
+@WebServlet(name = "home", value = "/home") // Changez ici
 public class MyServlet extends HttpServlet {
     String message = "";
 
@@ -42,32 +42,11 @@ public class MyServlet extends HttpServlet {
 
         try {
 //            userRepository.insertUser(user);
-            resp.sendRedirect("home.jsp"); // Redirige après l'insertion
+            req.getRequestDispatcher("/home.jsp").forward(req, resp);
         } catch (Exception e) {
 //            resp.getWriter().println("<h1>Error while inserting user: " + e.getMessage() + "</h1>");
             e.printStackTrace();
         }
     }
 
-/*
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, IOException {
-        resp.setContentType("text/html");
-
-        req.getRequestDispatcher("/home.jsp").forward(req, resp);
-
-//
-        User user = new User();
-        user.setUsername("Chaima");
-        user.setEmail("chaima@gmail.com");
-        UserRepository userRepository = new UserRepository();
-        try {
-            userRepository.insertUser(user);
-            resp.getWriter().println("<h1>User created successfully!" + user.getUsername() + "</h1>");
-        } catch (Exception e) {
-            resp.getWriter().println("<h1>Error while inserting user: " + e.getMessage() + "</h1>");
-            e.printStackTrace();
-        }
-
-    }
-*/
 }
