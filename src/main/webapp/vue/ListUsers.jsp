@@ -38,6 +38,7 @@
                 <th class="text-left p-3 px-5">ID</th>
                 <th class="text-left p-3 px-5">User name</th>
                 <th class="text-left p-3 px-5">Email</th>
+                <th class="text-left p-3 px-5">Role</th>
                 <th></th>
             </tr>
             </thead>
@@ -53,6 +54,8 @@
                 <td class="p-3 px-5"><%= user.getUsername() %>
                 </td>
                 <td class="p-3 px-5"><%= user.getEmail() %>
+                </td>
+                <td class="p-3 px-5"><%= user.getRole() %>
                 </td>
                 <td class="p-3 px-5 flex justify-end">
 

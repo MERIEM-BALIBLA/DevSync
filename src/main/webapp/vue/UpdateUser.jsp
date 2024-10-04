@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="org.example.model.User" %>
+<%@ page import="org.example.model.enums.Role" %>
 
 <%
     User user = (User) request.getAttribute("user");
@@ -39,10 +40,14 @@
                 <input type="email" id="email" name="email" required value="<%= user.getEmail() %>"
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
             </div>
-            <%--            <button type="submit"--%>
-            <%--                    class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">--%>
-            <%--                Ajouter Utilisateur--%>
-            <%--            </button>--%>
+            <div class="mb-4">
+                <label for="role" class="block text-sm font-medium text-gray-700">Role:</label>
+                <select id="role" name="role" required
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+                    <option value="USER" <%= user.getRole() == Role.USER ? "selected" : "" %>>User</option>
+                    <option value="ADMIN" <%= user.getRole() == Role.ADMIN ? "selected" : "" %>>Admin</option>
+                </select>
+            </div>
             <button type="submit"
                     class='relative w-full inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-base text-pink-600 font-semibold rounded-lg group bg-gradient-to-br from-pink-500 to-pink-400 group-hover:from-pink-500 group-hover:to-pink-400 hover:text-white'>
                 <span class='relative w-full py-2 px-5 transition-all ease-in duration-75 bg-white rounded-lg group-hover:bg-opacity-0'>Save modification</span>

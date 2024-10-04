@@ -1,9 +1,6 @@
 package org.example.repository.implementation;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import org.example.model.User;
 import org.example.repository.interfaces.UserInterface;
 
@@ -67,6 +64,7 @@ public class UserRepository implements UserInterface {
             if (existingUser != null) {
                 existingUser.setUsername(user.getUsername()); // Met à jour le nom d'utilisateur
                 existingUser.setEmail(user.getEmail()); // Met à jour l'email
+                existingUser.setRole(user.getRole());
                 em.merge(existingUser); // Applique les changements
             } else {
                 throw new RuntimeException("User not found with ID: " + user.getId());
@@ -87,6 +85,20 @@ public class UserRepository implements UserInterface {
             return em.find(User.class, userId);
         }
     }
+
+    public User findByEmail(String email) {
+        EntityManager em = getEntityManager();
+        try {
+            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
+            query.setParameter("email", email);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Si aucun utilisateur n'est trouvé
+        } finally {
+            em.close();
+        }
+    }
+
 
     public void close() {
         if (entityManagerFactory != null && entityManagerFactory.isOpen()) {

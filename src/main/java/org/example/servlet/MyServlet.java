@@ -35,11 +35,6 @@ public class MyServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        User user = new User();
-//        user.setUsername("Chaima");
-//        user.setEmail("chaima@gmail.com");
-        UserRepository userRepository = new UserRepository();
-
         try {
 //            userRepository.insertUser(user);
             req.getRequestDispatcher("/home.jsp").forward(req, resp);
