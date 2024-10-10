@@ -3,6 +3,8 @@ package org.example.model;
 import jakarta.persistence.*;
 import org.example.model.enums.Role;
 
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -19,21 +21,23 @@ public class User {
 
     @Column(name = "password") // Colonne pour le mot de passe
     private String password;
+    @Column(name = "is_manager") // Nouvelle colonne pour indiquer si l'utilisateur est un manager
+    private boolean isManager = false; // Champ pour le rôle de manager
 
-    @Column(name = "role") // Nouvelle colonne pour le rôle
-    @Enumerated(EnumType.STRING) // Stocke le rôle comme une chaîne
-    private Role role;
+    @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL)
+    private List<Task> tasks;
 
     // Constructeurs, getters, setters
     public User() {
     }
 
-    public User(String username, String email, String password, Role role) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.role = role; // Ajout du rôle
+//        this.role = role; // Ajout du rôle
     }
+
     // Getters and Setters...
     public int getId() {
         return id;
@@ -67,11 +71,11 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
+    public boolean isManager() {
+        return isManager;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setManager(boolean manager) {
+        isManager = manager;
     }
 }

@@ -74,7 +74,6 @@ public class AuthServlet extends HttpServlet {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(hashedPassword);
-        user.setRole(role);
 
         // Insertion de l'utilisateur dans la base de données
         userRepository.insertUser(user); // Assurez-vous que cette méthode ne lance pas d'exception
@@ -122,9 +121,9 @@ public class AuthServlet extends HttpServlet {
             req.getSession().setAttribute("user", user); // Enregistrer l'utilisateur dans la session
 
             // Vérifier le rôle de l'utilisateur
-            if (user.getRole() == Role.ADMIN) {
+            if (user.isManager()) {
                 resp.sendRedirect(req.getContextPath() + "/userList");
-            } else if (user.getRole() == Role.USER) {
+            } else {
                 resp.sendRedirect(req.getContextPath() + "/dashboard");
             }
         } else {

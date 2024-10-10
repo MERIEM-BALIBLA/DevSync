@@ -17,26 +17,11 @@ import java.io.IOException;
 
 @WebServlet(name = "home", value = "/home") // Changez ici
 public class MyServlet extends HttpServlet {
-    String message = "";
-
-    public void init() throws ServletException {
-        message = "Hello World!";
-        try {
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("myJPAUnit");
-            EntityManager entityManager = emf.createEntityManager();
-            if (entityManager.isOpen())
-                message = "Connected to the database successfully!";
-            else
-                message = "Not connected..";
-        } catch (Exception e) {
-            message = "Error connecting : " + e.getMessage();
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-//            userRepository.insertUser(user);
+
             req.getRequestDispatcher("/home.jsp").forward(req, resp);
         } catch (Exception e) {
 //            resp.getWriter().println("<h1>Error while inserting user: " + e.getMessage() + "</h1>");
