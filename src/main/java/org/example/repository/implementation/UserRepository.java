@@ -32,15 +32,15 @@ public class UserRepository implements UserInterface {
             em.close(); // Ferme l'EntityManager
         }
     }
+
     @Override
     public List<User> getAllUsers() {
-
         try (EntityManager em = getEntityManager()) {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u ORDER BY u.id ASC", User.class);
             return query.getResultList();
         }
-        // Ferme l'EntityManager
     }
+
     @Override
     public void deleteUser(int userId) {
         EntityManager em = entityManagerFactory.createEntityManager();
@@ -54,18 +54,20 @@ public class UserRepository implements UserInterface {
         em.getTransaction().commit();
         em.close();
     }
+
     @Override
     public void updateUser(User user) {
         EntityManager em = getEntityManager();
 
         try {
-            em.getTransaction().begin(); // Commence la transaction
-            User existingUser = em.find(User.class, user.getId()); // Trouve l'utilisateur par ID
+            em.getTransaction().begin();
+            User existingUser = em.find(User.class, user.getId());
             if (existingUser != null) {
-                existingUser.setUsername(user.getUsername()); // Met à jour le nom d'utilisateur
-                existingUser.setEmail(user.getEmail()); // Met à jour l'email
-                existingUser.setRole(user.getRole());
-                em.merge(existingUser); // Applique les changements
+                existingUser.setUsername(user.getUsername());
+                existingUser.setEmail(user.getEmail());
+                existingUser.setPassword(user.getPassword());
+                existingUser.setManager(user.isManager());
+                em.merge(existingUser);
             } else {
                 throw new RuntimeException("User not found with ID: " + user.getId());
             }
@@ -79,6 +81,7 @@ public class UserRepository implements UserInterface {
             em.close(); // Ferme l'EntityManager
         }
     }
+
     @Override
     public User findById(int userId) {
         try (EntityManager em = getEntityManager()) {
@@ -87,15 +90,12 @@ public class UserRepository implements UserInterface {
     }
 
     public User findByEmail(String email) {
-        EntityManager em = getEntityManager();
-        try {
+        try (EntityManager em = getEntityManager()) {
             TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
             query.setParameter("email", email);
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null; // Si aucun utilisateur n'est trouvé
-        } finally {
-            em.close();
         }
     }
 

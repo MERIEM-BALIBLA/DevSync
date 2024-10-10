@@ -7,7 +7,7 @@
 
 </head>
 <body class="bg-gray-100">
-<%@ include file="components/header.jsp" %>
+<%@ include file="components/homeHeader.jsp" %>
 <section class="bg-gray-50">
     <div class="mx-auto px-4 py-32 lg:flex lg:items-center">
         <div class="mx-auto max-w-xl text-center">

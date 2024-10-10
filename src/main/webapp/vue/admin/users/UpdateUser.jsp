@@ -4,10 +4,6 @@
 
 <%
     User user = (User) request.getAttribute("user");
-//    if (user == null) {
-//        out.println("Aucun utilisateur trouvé.");
-//        return;
-//    }
 %>
 <!DOCTYPE html>
 <html>
@@ -17,7 +13,7 @@
 
 </head>
 <body class="bg-gray-100">
-<%@ include file="../components/header.jsp" %>
+<%@ include file="../../../components/header.jsp" %>
 <div class=" flex justify-center py-6 relative ">
     <a href="${pageContext.request.contextPath}/userList" class="absolute left-6 ">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -44,9 +40,10 @@
                 <label for="role" class="block text-sm font-medium text-gray-700">Role:</label>
                 <select id="role" name="role" required
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
-                    <option value="USER" <%= user.getRole() == Role.USER ? "selected" : "" %>>User</option>
-                    <option value="ADMIN" <%= user.getRole() == Role.ADMIN ? "selected" : "" %>>Admin</option>
+                    <option value="USER" <%= !user.isManager() ? "selected" : "" %>>User</option>
+                    <option value="ADMIN" <%= user.isManager() ? "selected" : "" %>>Admin</option>
                 </select>
+
             </div>
             <button type="submit"
                     class='relative w-full inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-base text-pink-600 font-semibold rounded-lg group bg-gradient-to-br from-pink-500 to-pink-400 group-hover:from-pink-500 group-hover:to-pink-400 hover:text-white'>

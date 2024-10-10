@@ -9,7 +9,7 @@
 <html>
 <%@ include file="../../components/head.jsp" %>
 
-<%@ include file="../../components/header.jsp" %>
+<%@ include file="../../components/homeHeader.jsp" %>
 
 <%--<head>
     <title>Title</title>
@@ -17,9 +17,9 @@
 </head>--%>
 <body>
 <!-- component -->
-<div class="py-16 flex items-center justify-center w-full dark:bg-gray-950">
-    <div class="bg-white dark:bg-gray-900 shadow-md rounded-lg px-8 py-6 max-w-md">
-        <h1 class="text-2xl font-bold text-center mb-4 dark:text-gray-200">Welcome Back!</h1>
+<div class="py-8 px-24">
+    <div class="bg-white shadow-md rounded-lg px-8 py-6">
+        <h1 class="text-2xl font-bold text-center mb-4 dark:text-gray-200">Create a new account!</h1>
 
         <form action="${pageContext.request.contextPath}/auth" method="post">
             <input type="hidden" name="action" value="signUp"> <!-- Action ajoutée ici -->
@@ -55,16 +55,18 @@
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
             </div>
 
-<%--            <div>--%>
-<%--                <p class="text-sm mb-2">You already have account ? <a href="auth?action=login">Log in</a></p>--%>
-<%--            </div>--%>
-            <button type="button"
-                    onclick="alert('Hello'); this.form.submit();"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm
-                    text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2
+            <div>
+                <p class="text-sm mb-2">You already have account ? <a href="auth?action=login">Log in</a></p>
+            </div>
+            <div class="flex justify-center">
+                <button type="submit"
+                        onclick="alert('Hello')"
+                        class="w-1/3 flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm
+                    text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2
                     focus:ring-offset-2 focus:ring-indigo-500">
-                Login
-            </button>
+                    Sign up
+                </button>
+            </div>
 
         </form>
     </div>

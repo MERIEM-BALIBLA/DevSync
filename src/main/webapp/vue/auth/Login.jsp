@@ -9,7 +9,7 @@
 <html>
 <%@ include file="../../components/head.jsp" %>
 
-<%@ include file="../../components/header.jsp" %>
+<%@ include file="../../components/homeHeader.jsp" %>
 
 
 <body>
@@ -39,11 +39,18 @@
                    class="text-xs text-gray-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Forgot
                     Password?</a>
             </div>
-
-            <button type="submit" onclick="alert(" hello
-            ")" type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm
-            text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2
-            focus:ring-offset-2 focus:ring-indigo-500">Login</button>
+            <div>
+                <p class="text-sm mb-2">You don't have account ? <a href="auth?action=signUp">Sign Up</a></p>
+            </div>
+            <div class="flex justify-center">
+                <button type="submit"
+                        onclick="alert('Hello')"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm
+                    text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2
+                    focus:ring-offset-2 focus:ring-indigo-500">
+                    Sign up
+                </button>
+            </div>
         </form>
     </div>
 </div>

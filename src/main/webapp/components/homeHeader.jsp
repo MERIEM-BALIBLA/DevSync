@@ -1,7 +1,5 @@
 <%@ page import="org.example.model.User" %>
-<%
-    User sessionUser = (User) session.getAttribute("user");
-%>
+
 <header class="bg-zinc-800 p-4 border shadow-lg">
     <div class="container mx-auto flex justify-between items-center">
         <a href="${pageContext.request.contextPath}/home" class="flex gap-4 items-center">
@@ -11,27 +9,6 @@
             </svg>
             <p class="text-black text-2xl font-bold">DevSync</p>
         </a>
-        <nav>
-            <%
-                if (sessionUser != null) {
-            %>
-            <a href="${pageContext.request.contextPath}/auth?action=logout">
-                <button class="relative flex items-center justify-center p-2 border-none bg-transparent cursor-pointer group">
-                    <svg class="w-full h-4 text-pink-600 transition-transform duration-200" viewBox="0 0 512 512"
-                         fill="currentColor">
-                        <path
-                                d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"
-                        ></path>
-                    </svg>
-                    <span class="absolute w-full left-1/2 transform -translate-x-1/2 mt-8 text-pink-600 text-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100">Log out</span>
-                </button>
-            </a>
-            <%
-                }
-            %>
-        </nav>
     </div>
-    <div>
-        <span class="text-black">Bienvenue, <%= sessionUser.getUsername() %>!</span>
-    </div>
+
 </header>

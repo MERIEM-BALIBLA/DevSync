@@ -5,11 +5,13 @@
              version="3.0">
     <persistence-unit name="myJPAUnit">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>org.example.model.Task</class>
+        <class>org.example.model.User</class>
+        <class>org.example.model.Tag</class>
         <properties>
-<!--            <property name="hibernate.connection.pool_size" value="10"/> &lt;!&ndash; Augmentez si nécessaire &ndash;&gt;-->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/maven"/>
-            <property name="jakarta.persistence.jdbc.user" value="Maven"/>
+            <property name="jakarta.persistence.jdbc.user" value="meriem"/>
             <property name="jakarta.persistence.jdbc.password" value=""/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
