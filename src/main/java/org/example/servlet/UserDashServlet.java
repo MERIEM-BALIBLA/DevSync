@@ -9,18 +9,14 @@ import jakarta.servlet.http.HttpSession;
 import org.example.model.Tag;
 import org.example.model.Task;
 import org.example.model.User;
-import org.example.model.enums.Role;
-import org.example.repository.implementation.TagRepository;
 import org.example.service.TagService;
 import org.example.service.TaskService;
-import org.example.service.UserService;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet("/dashboard")
 public class UserDashServlet extends HttpServlet {
@@ -81,15 +77,21 @@ public class UserDashServlet extends HttpServlet {
         String title = req.getParameter("title");
         String description = req.getParameter("description");
         String endDateStr = req.getParameter("endDate");
-        String[] existingTags = req.getParameterValues("existingTags[]");
-        if (existingTags == null) {
-            System.out.println("existingTags is null");
-        } else {
-            System.out.println("existingTags size: " + existingTags.length);
-        }
-        String newTag = req.getParameter("newTag"); // Récupérer le nouveau tag
 
-        // Validation des paramètres
+        String[] tags = req.getParameter("tag").split("\\s*,\\s*"); // Split tags by commas and trim spaces
+        List<Tag> tagsList = new ArrayList<>();
+
+        // Retrieve tags and check for null
+        for (String titleTag : tags) {
+            Tag tag = tagService.findByTitle(titleTag);
+            if (tag == null) {
+                tag = new Tag(titleTag);
+            }
+            tagsList.add(tag); // Only add valid tags
+        }
+
+        System.out.println(tagsList);
+
         if (title == null || title.isEmpty() || description == null || description.isEmpty() || endDateStr == null) {
             req.setAttribute("errorMessage", "Tous les champs doivent être remplis.");
             req.getRequestDispatcher("/vue/user/InsertTask.jsp").forward(req, resp);
@@ -99,7 +101,6 @@ public class UserDashServlet extends HttpServlet {
         LocalDate endDate;
         try {
             endDate = LocalDate.parse(endDateStr);
-            // Vérification que la date de fin est après aujourd'hui
             if (endDate.isBefore(LocalDate.now())) {
                 req.setAttribute("errorMessage", "La date de fin doit être après aujourd'hui.");
                 req.getRequestDispatcher("/vue/user/InsertTask.jsp").forward(req, resp);
@@ -125,13 +126,12 @@ public class UserDashServlet extends HttpServlet {
         newTask.setDate(endDate);
         newTask.setAssignedUser(sessionUser);
         newTask.setCreatedBy(sessionUser);
+        newTask.setTags(tagsList);
 
-        List<Tag> tagsToAdd = new ArrayList<>();
-
-        newTask.setTags(tagsToAdd);
-        Task task = taskService.insertTask(newTask);
+        taskService.save(newTask);
         resp.sendRedirect(req.getContextPath() + "/dashboard");
     }
+
 
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("taskId");

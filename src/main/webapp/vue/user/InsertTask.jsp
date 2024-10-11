@@ -50,30 +50,10 @@
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
             </div>
 
-            <label for="existingTags">Tags existants :</label>
-            <select id="existingTags" name="existingTags[]" multiple
-                    class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
-                <%
-                    List<Tag> tags = (List<Tag>) request.getAttribute("tags");
-                    if (tags == null || tags.isEmpty()) {
-                %>
-                <option>Pas de tags</option>
-                <%
-                } else {
-                    for (Tag tag : tags) {
-                %>
-                <option value="<%= tag.getId() %>"><%= tag.getTitle() %>
-                </option>
-                <%
-                        }
-                    }
-                %>
-            </select>
-
             <div>
-                <label for="newTag">Nouveau tag :</label>
-                <input type="text" id="newTag" name="newTag"
-                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+                <label for="newTags">Nommer des tags (séparés par des virgules):</label>
+                <textarea id="newTags" name="tag" rows="3"
+                          class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"></textarea>
             </div>
 
             <!-- Hidden field for the assigned user ID -->

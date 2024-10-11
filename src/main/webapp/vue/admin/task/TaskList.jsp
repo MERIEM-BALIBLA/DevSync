@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.model.Task" %>
+<%@ page import="org.example.model.Tag" %>
+<%@ page import="java.util.stream.Collectors" %>
 <html>
 <head>
     <title>Liste des Tâches</title>
@@ -13,8 +15,8 @@
 %>
 
 
-<%@ include file="../../components/header.jsp" %>
-<%@ include file="../../components/sideBar.jsp" %>
+<%@ include file="../../../components/header.jsp" %>
+<%@ include file="../../../components/sideBar.jsp" %>
 
 <div class="text-gray-900 bg-gray-200">
     <div class="p-4 flex">
@@ -25,7 +27,6 @@
     <a href="${pageContext.request.contextPath}/tasks?action=insertTask" class="mr-3">
         <button class="bg-pink-500 text-white py-1 px-3 rounded">Add a new user</button>
     </a>
-
     <div class="px-3 py-4 flex justify-center">
         <table class="w-full text-md bg-white shadow-md rounded mb-4">
             <tbody>
@@ -37,20 +38,19 @@
                 <th class="text-left p-3 px-5">Assigned to</th>
                 <th class="text-left p-3 px-5">Status</th>
                 <th class="text-left p-3 px-5">Still confirmed</th>
+                <th class="text-left p-3 px-5">tags</th>
                 <th></th>
             </tr>
-
-
             <%
                 if (tasks != null && !tasks.isEmpty()) {
                     for (Task task : tasks) {
             %>
             <tr class="border-b hover:bg-orange-100 bg-gray-100">
-                <td class="p-3 px-5"><%= task.getTitle() %>
+                <td class="p-3 px-5  text-sm"><%= task.getTitle() %>
                 </td>
-                <td class="p-3 px-5"><%= task.getDescription() %>
+                <td class="p-3 px-5 tx-sm"><%= task.getDescription() %>
                 </td>
-                <td class="p-3 px-5"><%= task.getCreatedAt() %>
+                <td class="p-3 px-5 tx-sm"><%= task.getCreatedAt() %>
                 </td>
                 <td class="p-3 px-5"><%= task.getEndDate() %>
                 </td>
@@ -58,7 +58,16 @@
                 </td>
                 <td class="p-3 px-5"><%= task.isCompleted() ? "completed" : "not completed" %>
                 </td>
-                <td class="p-3 px-5"><%= task.isConfirmed() ? "working on it" : "refused" %>
+                <td class="p-3 px-5">
+                    <%= task.isConfirmed() ? "working on it" : "not confirmed" %>
+                </td>
+                <td>
+                    <%
+                        String tagTitles = task.getTags().stream()
+                                .map(Tag::getTitle)
+                                .collect(Collectors.joining(", "));
+                    %>
+                    <%= tagTitles %>
                 </td>
 
                 <td class="p-3 px-5 flex justify-end">

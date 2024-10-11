@@ -36,11 +36,11 @@ public class Task {
 
     @Column(nullable = false)
     private LocalDate createdAt = LocalDate.now();
-    ;
 
     @Column(nullable = false)
     private boolean isConfirmed;
-    @ManyToMany(cascade = CascadeType.ALL)
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
             name = "task_tags",
             joinColumns = @JoinColumn(name = "task_id"),
@@ -49,6 +49,7 @@ public class Task {
     private List<Tag> tags = new ArrayList<>();
 
     public Task() {
+        this.isConfirmed = true;
     }
 
     public Task(String title, String description, LocalDate endDate, User assignedUser, User createdBy) {
@@ -56,14 +57,11 @@ public class Task {
         this.description = description;
         this.endDate = endDate;
         this.assignedUser = assignedUser;
-        this.createdBy = createdBy; // Initialiser createdBy ici
-        this.createdAt = LocalDate.now(); // Initialiser createdAt ici
-        this.completed = false; // Tâche non complétée par défaut
-        this.isConfirmed = true; // Initialiser isConfirmed ici
+        this.createdBy = createdBy;
+        this.createdAt = LocalDate.now();
+        this.completed = false;
+        this.isConfirmed = true;
     }
-
-
-    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -140,17 +138,5 @@ public class Task {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
-
-    public void addTag(Tag tag) {
-        this.tags.add(tag);
-        tag.getTasks().add(this); // Ajoute la tâche à la liste des tâches du tag
-    }
-
-    public void addTags(List<Tag> tags) {
-        for (Tag tag : tags) {
-            addTag(tag); // Utilise la méthode existante pour ajouter chaque tag
-        }
-    }
-
 
 }
