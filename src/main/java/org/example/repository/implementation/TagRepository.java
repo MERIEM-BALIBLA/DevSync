@@ -2,6 +2,7 @@ package org.example.repository.implementation;
 
 import jakarta.persistence.*;
 import org.example.model.Tag;
+import org.example.model.Task;
 
 import java.util.List;
 
@@ -12,6 +13,20 @@ public class TagRepository {
 
         return entityManagerFactory.createEntityManager();
     }
+
+    public Tag insert(Tag tag) {
+        EntityManager em = getEntityManager();
+        if (tag.getId() != 0) {
+            return em.merge(tag);
+        } else {
+            em.getTransaction().begin();
+            em.persist(tag);
+            em.getTransaction().commit();
+            return tag;
+        }
+    }
+
+    /*
     public Tag insert(Tag tag) {
         EntityManager em = getEntityManager();
         try {
@@ -27,6 +42,7 @@ public class TagRepository {
         }
         return tag;
     }
+*/
     public Tag findByTitle(String title) {
         try {
             EntityManager em = getEntityManager();
@@ -55,5 +71,28 @@ public class TagRepository {
             return null;
         }
     }
+    public Tag merge(Tag tag) {
+        Tag editedTag = null;
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Tag foundTag = em.find(Tag.class, tag.getId());
+            if (foundTag != null) {
+                foundTag.setTitle(tag.getTitle());
+                editedTag = em.merge(foundTag);
+            } else {
+                editedTag = em.merge(tag);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return editedTag;
+    }
+
+
 
 }

@@ -14,7 +14,9 @@ public class Tag {
     @Column(nullable = false)
     private String title;
 
-    @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
+    /*@ManyToMany(mappedBy = "tags")
+    private List<Task> taskList;*/
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "tags", cascade = {CascadeType.REMOVE})
     private List<Task> taskList;
 
     public Tag() {
@@ -47,13 +49,5 @@ public class Tag {
     public void setTasks(List<Task> tasks) {
         this.taskList = tasks;
     }
-
-    public void addTask(Task task) {
-        if (!taskList.contains(task)) {
-            taskList.add(task);  // Ajout de la tâche si elle n'est pas déjà présente
-            task.addTag(this); // Mise à jour de la relation bidirectionnelle dans Task
-        }
-    }
-
 
 }

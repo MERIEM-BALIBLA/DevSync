@@ -1,10 +1,4 @@
-<div x-data="setup()" x-init="$refs.loading.classList.add('hidden');">
-    <div
-            x-ref="loading"
-            class="fixed inset-0 z-50 flex items-center justify-center text-2xl font-semibold text-white bg-blue-600"
-    >
-        Loading.....
-    </div>
+<div x-data="setup()">
     <button @click="isSidebarOpen = true" class="fixed p-2 text-white bg-black rounded-lg bottom-5 left-5">
         <svg
                 class="w-6 h-6"
@@ -46,7 +40,6 @@
             <div class="flex items-center justify-between flex-shrink-0 w-64 p-4">
                 <!-- Logo -->
                 <a href="#">
-                    <%--                        <span class="sr-only">K-UI</span>--%>
                     <svg
                             aria-hidden="true"
                             class="w-16 h-auto text-blue-600"
@@ -77,29 +70,8 @@
                 </button>
             </div>
             <nav class="flex flex-col flex-1 w-64 p-4 mt-4">
-                <%--  <a href="#" class="flex items-center space-x-2">
-                      <svg
-                              class="w-6 h-6"
-                              aria-hidden="true"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                      >
-                          <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                      </svg>
-                      <span>Home</span>
-                  </a>--%>
-                <a href="userList">
-                    Users list
-                </a>
-                <a href="${pageContext.request.contextPath}/tasks">
-                    Task List
-                </a>
+                <a href="userList">Users list</a>
+                <a href="${pageContext.request.contextPath}/tasks">Task List</a>
             </nav>
             <div class="flex-shrink-0 p-4">
                 <a href="${pageContext.request.contextPath}/auth?action=logout">

@@ -18,13 +18,6 @@ public class TagService {
         this.taskRepository = new TaskRepository();
     }
 
-    public Tag createTage(String tagTitle) {
-        Tag newTag = new Tag(tagTitle);
-        tagRepository.insert(newTag);
-        return newTag;
-
-    }
-
     public List<Tag> getAllTag() {
         return tagRepository.getAllTag();
     }
@@ -42,4 +35,7 @@ public class TagService {
         return tagRepository.insert(tag);
     }
 
+    public Tag merge(Tag tag) {
+        return tagRepository.merge(tag);
+    }
 }
