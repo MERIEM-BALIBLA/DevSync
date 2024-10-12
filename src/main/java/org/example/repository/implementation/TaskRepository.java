@@ -17,38 +17,6 @@ public class TaskRepository implements TaskInterface {
         return entityManagerFactory.createEntityManager();
     }
 
-
-
-/*
-    public Task save(Task task) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            if (task.getTags() != null) {
-                for (int i = 0; i < task.getTags().size(); i++) {
-                    Tag tag = task.getTags().get(i);
-                    if (tag.getId() != 0) {
-                        task.getTags().set(i, em.merge(tag));
-                    } else {
-                        em.persist(tag);
-                    }
-                }
-            }
-            em.persist(task);
-            em.getTransaction().commit();
-        }catch (Exception e) {
-            if (em.getTransaction().isActive()){
-                em.getTransaction().rollback();
-            }
-            System.out.println(e.getMessage());
-        }finally {
-            em.close();
-        }
-        return task;
-    }
-*/
-
-    // Insert new task into the database
     public Task insertTask(Task task) {
         EntityManager em = getEntityManager();
         try {
@@ -64,48 +32,6 @@ public class TaskRepository implements TaskInterface {
             em.close();
         }
         return task;
-    }
-
-    // Insert a new tag or merge an existing one
-    public Tag insertTag(Tag tag) {
-        EntityManager em = getEntityManager();
-        try {
-            em.getTransaction().begin();
-            if (tag.getId() == 0) {
-                // Persist new tags (ID is 0 or not set)
-                em.persist(tag);
-            } else {
-                // Merge existing tags (ID is non-zero)
-                tag = em.merge(tag);
-            }
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw e;
-        } finally {
-            em.close();
-        }
-        return tag;
-    }
-
-    // Merge existing tag
-    public Tag mergeTag(Tag tag) {
-        EntityManager em = getEntityManager();
-        try {
-            em.getTransaction().begin();
-            Tag managedTag = em.merge(tag); // Merging the detached entity
-            em.getTransaction().commit();
-            return managedTag;
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw new RuntimeException("Error merging tag", e);
-        } finally {
-            em.close();
-        }
     }
 
     public List<Task> getAllTask() {
@@ -135,20 +61,6 @@ public class TaskRepository implements TaskInterface {
             em.close();
         }
     }
-
-
-/*
-    public void deleteTask(int task_id) {
-        EntityManager em = getEntityManager();
-        em.getTransaction().begin();
-        Task task = em.find(Task.class, task_id);
-        if (task != null) {
-            em.remove(task);
-        }
-        em.getTransaction().commit();
-        em.close();
-    }
-*/
 
     public List<Task> getTasksByUserId(int userId) {
         EntityManager em = getEntityManager();
@@ -201,9 +113,29 @@ public class TaskRepository implements TaskInterface {
             if (foundTask != null) {
                 foundTask.setTitle(task.getTitle());
                 foundTask.setDescription(task.getDescription());
-                foundTask.setDate(task.getEndDate());
+                foundTask.setEndDate(task.getEndDate());
                 foundTask.setAssignedUser(task.getAssignedUser());
 
+                editedTask = em.merge(foundTask);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+        return editedTask;
+    }
+
+    public Task updateStatus(Task task) {
+        Task editedTask = null;
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Task foundTask = em.find(Task.class, task.getId());
+            if (foundTask != null) {
+                foundTask.setCompleted(task.isCompleted());
                 editedTask = em.merge(foundTask);
             }
             em.getTransaction().commit();

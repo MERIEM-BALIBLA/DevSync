@@ -70,6 +70,8 @@ public class UserDashServlet extends HttpServlet {
             insertTask(req, resp);
         } else if ("Delete".equals(action)) {
             doDelete(req, resp);
+        } else if ("updateStatus".equals(action)) {
+            updateStatus(req, resp);
         }
     }
 
@@ -77,6 +79,7 @@ public class UserDashServlet extends HttpServlet {
         String title = req.getParameter("title");
         String description = req.getParameter("description");
         String endDateStr = req.getParameter("endDate");
+        String startDateStr = req.getParameter("startDate");
 
         String[] tags = req.getParameter("tag").split("\\s*,\\s*"); // Split tags by commas and trim spaces
         List<Tag> tagsList = new ArrayList<>();
@@ -111,7 +114,7 @@ public class UserDashServlet extends HttpServlet {
             req.getRequestDispatcher("/vue/user/InsertTask.jsp").forward(req, resp);
             return;
         }
-
+        LocalDate startDate = LocalDate.parse(startDateStr);
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
@@ -123,7 +126,8 @@ public class UserDashServlet extends HttpServlet {
         Task newTask = new Task();
         newTask.setTitle(title);
         newTask.setDescription(description);
-        newTask.setDate(endDate);
+        newTask.setStartDate(startDate);
+        newTask.setEndDate(endDate);
         newTask.setAssignedUser(sessionUser);
         newTask.setCreatedBy(sessionUser);
         newTask.setTags(tagsList);
@@ -141,5 +145,74 @@ public class UserDashServlet extends HttpServlet {
 
         }
     }
+
+    protected void updateStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String taskIdStr = req.getParameter("taskId");
+        String status = req.getParameter("status");  // "completed" ou "undo"
+
+        if (taskIdStr != null && !taskIdStr.isEmpty()) {
+            int taskId = Integer.parseInt(taskIdStr);
+            Task task = taskService.findById(taskId);
+
+            if (task != null) {
+                LocalDate currentDate = LocalDate.now();
+                LocalDate deadline = task.getEndDate();
+
+                if ("completed".equals(status)) {
+                    if (deadline != null && currentDate.isBefore(deadline)) {
+                        task.setCompleted(true);
+                    } else {
+                        resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Task cannot be marked as completed because the deadline has passed");
+                        return;
+                    }
+                } else if ("undo".equals(status)) {
+                    task.setCompleted(false);  // Annuler l'état "terminé"
+                }
+                taskService.updateStatus(task);
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
+            } else {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
+            }
+        } else {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
+        }
+    }
+
+/*
+    protected void updateStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String taskIdStr = req.getParameter("taskId");
+        String status = req.getParameter("status");  // status pourrait être "completed" ou "undo"
+
+        if (taskIdStr != null && !taskIdStr.isEmpty()) {
+            int taskId = Integer.parseInt(taskIdStr);
+
+            // Cherche la tâche en utilisant l'ID
+            Task task = taskService.findById(taskId);
+
+            if (task != null) {
+                // Si le statut est "completed", on la marque comme validée
+                if ("completed".equals(status)) {
+                    task.setCompleted(true);
+                }
+                // Si le statut est "undo", on la marque comme non validée
+                else if ("undo".equals(status)) {
+                    task.setCompleted(false);
+                }
+
+                // Mise à jour de la tâche dans la base de données
+                taskService.updateStatus(task);
+
+                // Redirige vers la page de tableau de bord (ou la page des tâches)
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
+            } else {
+                // Si la tâche n'existe pas, renvoyer un message d'erreur
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
+            }
+        } else {
+            // Si l'ID de tâche est manquant ou invalide
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
+        }
+    }
+*/
 
 }

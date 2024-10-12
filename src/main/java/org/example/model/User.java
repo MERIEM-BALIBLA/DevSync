@@ -19,15 +19,17 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "password") // Colonne pour le mot de passe
+    @Column(name = "password")
     private String password;
-    @Column(name = "is_manager") // Nouvelle colonne pour indiquer si l'utilisateur est un manager
-    private boolean isManager = false; // Champ pour le rôle de manager
+    @Column(name = "is_manager")
+    private boolean isManager = false;
 
     @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL)
     private List<Task> tasks;
 
-    // Constructeurs, getters, setters
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
+
     public User() {
     }
 
@@ -35,10 +37,8 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
-//        this.role = role; // Ajout du rôle
     }
 
-    // Getters and Setters...
     public int getId() {
         return id;
     }

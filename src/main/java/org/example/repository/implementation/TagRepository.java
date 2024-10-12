@@ -26,23 +26,6 @@ public class TagRepository {
         }
     }
 
-    /*
-    public Tag insert(Tag tag) {
-        EntityManager em = getEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(tag);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            e.printStackTrace();
-            throw new RuntimeException("Erreur lors de l'insertion du tag: " + tag.getTitle(), e);
-        }
-        return tag;
-    }
-*/
     public Tag findByTitle(String title) {
         try {
             EntityManager em = getEntityManager();
@@ -91,6 +74,28 @@ public class TagRepository {
             em.close();
         }
         return editedTag;
+    }
+
+    public void delete(int tag_id) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Tag tag = em.find(Tag.class, tag_id);
+            if (tag != null) {
+                em.remove(tag);
+            } else {
+                System.out.println("Tâche non trouvée avec l'ID : " + tag_id);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            e.printStackTrace();
+            throw new RuntimeException("Erreur lors de la suppression de la tâche", e);
+        } finally {
+            em.close();
+        }
     }
 
 

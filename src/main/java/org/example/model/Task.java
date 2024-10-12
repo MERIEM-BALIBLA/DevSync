@@ -23,6 +23,8 @@ public class Task {
     @Column(nullable = false)
     private LocalDate endDate;
 
+    @Column(nullable = false)
+    private LocalDate startDate;
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy; // Ajout de l'attribut createdBy
@@ -40,7 +42,7 @@ public class Task {
     @Column(nullable = false)
     private boolean isConfirmed;
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "task_tags",
             joinColumns = @JoinColumn(name = "task_id"),
@@ -52,10 +54,11 @@ public class Task {
         this.isConfirmed = true;
     }
 
-    public Task(String title, String description, LocalDate endDate, User assignedUser, User createdBy) {
+    public Task(String title, String description, LocalDate endDate, LocalDate startDate,User assignedUser, User createdBy) {
         this.title = title;
         this.description = description;
         this.endDate = endDate;
+        this.startDate = startDate;
         this.assignedUser = assignedUser;
         this.createdBy = createdBy;
         this.createdAt = LocalDate.now();
@@ -91,8 +94,16 @@ public class Task {
         return endDate;
     }
 
-    public void setDate(LocalDate dueDate) {
+    public void setEndDate(LocalDate dueDate) {
         this.endDate = dueDate;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     public boolean isCompleted() {

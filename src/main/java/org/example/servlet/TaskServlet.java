@@ -85,42 +85,23 @@ public class TaskServlet extends HttpServlet {
         String title = req.getParameter("title");
         String description = req.getParameter("description");
         String endDateStr = req.getParameter("endDate");
+        String startDateStr = req.getParameter("startDate");
         String assignedUserIdStr = req.getParameter("assignedUserId");
 
 
         String[] tags = req.getParameter("tag").split("\\s*,\\s*"); // Split tags by commas and trim spaces
         List<Tag> tagsList = new ArrayList<>();
 
-        // Retrieve tags and check for null
         for (String titleTag : tags) {
             Tag tag = tagService.findByTitle(titleTag);
             if (tag == null) {
                 tag = new Tag(titleTag);
             }
-            tagsList.add(tag); // Only add valid tags
+            tagsList.add(tag);
         }
-
-        if (title == null || title.isEmpty() || description == null || description.isEmpty() ||
-                endDateStr == null || assignedUserIdStr == null) {
-            req.setAttribute("errorMessage", "Tous les champs doivent être remplis.");
-            req.getRequestDispatcher("/vue/auth/ajouterTask.jsp").forward(req, resp);
-            return;
-        }
-
-        LocalDate endDate;
-        try {
-            endDate = LocalDate.parse(endDateStr);
-            if (endDate.isBefore(LocalDate.now())) {
-                req.setAttribute("errorMessage", "La date de fin doit être après aujourd'hui.");
-                req.getRequestDispatcher("/vue/user/InsertTask.jsp").forward(req, resp);
-                return;
-            }
-        } catch (Exception e) {
-            req.setAttribute("errorMessage", "Date de fin invalide.");
-            req.getRequestDispatcher("/vue/user/InsertTask.jsp").forward(req, resp);
-            return;
-        }
-
+        User assignedUser = userService.findById(Integer.parseInt(assignedUserIdStr));
+        LocalDate endDate = LocalDate.parse(endDateStr);
+        LocalDate startDate = LocalDate.parse(startDateStr);
         HttpSession session = req.getSession();
         User sessionUser = (User) session.getAttribute("user");
         if (sessionUser == null) {
@@ -132,15 +113,25 @@ public class TaskServlet extends HttpServlet {
         Task newTask = new Task();
         newTask.setTitle(title);
         newTask.setDescription(description);
-        newTask.setDate(endDate);
-        newTask.setAssignedUser(sessionUser);
+        newTask.setStartDate(startDate);
+        newTask.setEndDate(endDate);
+        newTask.setAssignedUser(assignedUser);
         newTask.setCreatedBy(sessionUser);
         newTask.setTags(tagsList);
 
-        taskService.save(newTask);
-        resp.sendRedirect(req.getContextPath() + "/tasks");
-    }
+        try {
+            // Valider la tâche avant de l'enregistrer
+            taskService.validateTask(newTask);
 
+            // Si la validation passe, enregistrer la tâche
+            taskService.save(newTask);
+            resp.sendRedirect(req.getContextPath() + "/tasks");
+        } catch (IllegalArgumentException e) {
+            req.setAttribute("errorMessage", e.getMessage());
+            req.setAttribute("task", newTask);
+            req.getRequestDispatcher("/vue/admin/task/AddTask.jsp").forward(req, resp);
+        }
+    }
 
     private void editTask(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String taskId = req.getParameter("id");
@@ -158,7 +149,7 @@ public class TaskServlet extends HttpServlet {
             if (tag == null) {
                 tag = new Tag(titleTag);
             }
-            tagsList.add(tag); // Only add valid tags
+            tagsList.add(tag);
         }
 
         if (taskId == null || taskId.isEmpty()) {
@@ -179,8 +170,9 @@ public class TaskServlet extends HttpServlet {
 
         task.setTitle(title);
         task.setDescription(description);
-        task.setDate(LocalDate.parse(endDate));
+        task.setEndDate(LocalDate.parse(endDate));
         task.setTags(tagsList);
+
         // Vérification de l'utilisateur assigné
         UserService userService = new UserService();
         User assignedUser = userService.findById(Integer.parseInt(assignedUserId));

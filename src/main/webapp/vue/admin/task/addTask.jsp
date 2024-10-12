@@ -32,7 +32,11 @@
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
                 </textarea>
 
-                <label for="endDate" class="block text-sm font-medium text-gray-700">Date d'échéance:</label>
+                <label for="startDate" class="block text-sm font-medium text-gray-700">Start date:</label>
+                <input type="date" id="startDate" name="startDate" required
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+
+                <label for="endDate" class="block text-sm font-medium text-gray-700">End Date:</label>
                 <input type="date" id="endDate" name="endDate" required
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
 

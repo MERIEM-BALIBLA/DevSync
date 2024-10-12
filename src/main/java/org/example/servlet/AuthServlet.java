@@ -33,12 +33,6 @@ public class AuthServlet extends HttpServlet {
         } else if ("logout".equals(action)) {
             handleLogout(req, resp);
         }
-//        else if (req.getSession().getAttribute("user") != null) {
-//            req.getRequestDispatcher("/vue/user/dashboard.jsp").forward(req, resp);
-//        }
-        /*else if ("login".equals(action)) {
-            handleLogin(req, resp);
-        }*/
     }
 
     @Override

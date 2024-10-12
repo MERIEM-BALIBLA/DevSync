@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.model.Task" %>
+<%@ page import="java.time.LocalDate" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +12,6 @@
 <body class="bg-gray-100">
 
 <%@ include file="../../components/header.jsp" %>
-
 
 <div class="bg-gray-100 font-sans">
     <div x-data="{ openTab: 1 }" class="p-8">
@@ -50,6 +50,14 @@
                         if (tasks != null && !tasks.isEmpty()) {
                             for (Task task : tasks) {
                     %>
+                    <%
+                        LocalDate currentDate = LocalDate.now();  // Date actuelle
+                        LocalDate deadline = task.getEndDate();  // Date limite de la tâche
+                        boolean isPastDeadline = currentDate.isAfter(deadline);  // Vérifie si la date limite est dépassée
+                        boolean isCompleted = task.isCompleted();  // Vérifie si la tâche est terminée
+                        boolean isNotCompletedAndPastDeadline = !isCompleted && isPastDeadline;  // Si non terminée et date limite dépassée
+
+                    %>
                     <tr class="border-b hover:bg-orange-100 bg-gray-100">
 
                         <td class="p-3 px-5">
@@ -68,17 +76,49 @@
                             <%= task.isCompleted() ? "completed" : "not completed" %>
                         </td>
                         <td class="p-3 px-5 flex justify-end">
+                            <form action="${pageContext.request.contextPath}/dashboard" method="POST">
+                                <input type="hidden" name="action" value="updateStatus">
+                                <input type="hidden" name="taskId" value="<%= task.getId() %>">
 
-                            <button type="button"
-                                    class="mr-3 text-sm bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
-                                Done
-                            </button>
+                                <%-- Bouton de soumission avec style conditionnel --%>
+                                <input type="submit"
+                                       value="<%= isCompleted ? "Completed" : (isNotCompletedAndPastDeadline ? "Not Completed (Past Deadline)" : "Not Completed") %>"
+                                       class="mr-3 text-sm
+                              <%= isNotCompletedAndPastDeadline ? "bg-red-500" : "bg-blue-500" %>
+                              hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
 
-                            <button type="button"
-                                    class="mr-3 text-sm bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
-                                Refuse
+                                <input type="hidden" name="status" value="<%= isCompleted ? "undo" : "completed" %>">
+                            </form>
+
+                            <button title="Save"
+                                    class="cursor-pointer flex items-center fill-lime-400 bg-lime-950 hover:bg-lime-900 active:border active:border-lime-400 rounded-md duration-100 p-2">
+                                <span class="text-sm text-lime-400 font-bold pr-1">Refuse task</span>
                             </button>
                         </td>
+
+<%--
+                        <td class="p-3 px-5 flex justify-end">
+                            <form action="${pageContext.request.contextPath}/dashboard" method="POST">
+                                <input type="hidden" name="action" value="updateStatus">
+                                <input type="hidden" name="taskId" value="<%= task.getId() %>">
+                                <input type="submit" value="<%= task.isCompleted() ? "Complited" : "Not Complited" %>">
+                                <input type="hidden" name="status"
+                                       value="<%= task.isCompleted() ? "undo" : "completed" %>">
+                            </form>
+
+                            <button title="Save"
+                                    class="cursor-pointer flex items-center fill-lime-400 bg-lime-950 hover:bg-lime-900 active:border active:border-lime-400 rounded-md duration-100 p-2">
+                                &lt;%&ndash; <svg viewBox="0 -0.5 25 25" height="20px" width="20px"
+                                      xmlns="http://www.w3.org/2000/svg">
+                                     <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"
+                                           d="M18.507 19.853V6.034C18.5116 5.49905 18.3034 4.98422 17.9283 4.60277C17.5532 4.22131 17.042 4.00449 16.507 4H8.50705C7.9721 4.00449 7.46085 4.22131 7.08577 4.60277C6.7107 4.98422 6.50252 5.49905 6.50705 6.034V19.853C6.45951 20.252 6.65541 20.6407 7.00441 20.8399C7.35342 21.039 7.78773 21.0099 8.10705 20.766L11.907 17.485C12.2496 17.1758 12.7705 17.1758 13.113 17.485L16.9071 20.767C17.2265 21.0111 17.6611 21.0402 18.0102 20.8407C18.3593 20.6413 18.5551 20.2522 18.507 19.853Z"
+                                           clip-rule="evenodd" fill-rule="evenodd"></path>
+                                 </svg>&ndash;%&gt;
+                                <span class="text-sm text-lime-400 font-bold pr-1">Refuse task</span>
+                            </button>
+                        </td>
+--%>
+
                         <%
                                 }
                             }

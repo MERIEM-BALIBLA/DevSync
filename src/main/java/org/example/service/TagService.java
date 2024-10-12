@@ -38,4 +38,8 @@ public class TagService {
     public Tag merge(Tag tag) {
         return tagRepository.merge(tag);
     }
+
+    public void delete(int id) {
+        tagRepository.delete(id);
+    }
 }

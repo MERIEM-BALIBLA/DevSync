@@ -4,6 +4,7 @@ import org.example.model.Tag;
 import org.example.model.Task;
 import org.example.repository.implementation.TaskRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -22,30 +23,6 @@ public class TaskService {
         return taskRepository.getAllTask().stream()
                 .filter(e -> e.getCreatedBy().isManager())
                 .collect(Collectors.toList());
-    }
-
-
-    public Task insertTaskWithTags(Task task, String[] tags) {
-        if (task == null || task.getTitle() == null || task.getTitle().isEmpty()) {
-            throw new IllegalArgumentException("La tâche est invalide ou vide.");
-        }
-
-        List<Tag> tagsToAdd = new ArrayList<>();
-
-        if (tags != null) {
-            for (String tagTitle : tags) {
-                Tag foundTag = tagService.findByTitle(tagTitle);
-                if (foundTag == null) {
-                    // Si le tag n'existe pas, on le crée
-                    foundTag = new Tag(tagTitle);
-                    tagService.insert(foundTag);
-                }
-                tagsToAdd.add(foundTag); // Ajoute le tag trouvé ou nouvellement créé
-            }
-        }
-
-        task.setTags(tagsToAdd); // Associer les tags à la tâche
-        return taskRepository.insertTask(task); // Insérer la tâche dans le repository
     }
 
     public Task save(Task task) {
@@ -93,27 +70,122 @@ public class TaskService {
     }
 
     public Task updateTask(Task task) {
+        if (task == null || task.getId() == null) {
+            throw new IllegalArgumentException("Task is invalid or missing ID");
+        }
+
+        // Retrieve the existing task
+        Task existingTask = taskRepository.findById(Math.toIntExact(task.getId()));
+
+        if (existingTask == null) {
+            throw new IllegalArgumentException("No task found with the provided ID");
+        }
+
+        // Update task fields
+        existingTask.setTitle(task.getTitle());
+        existingTask.setDescription(task.getDescription());
+        existingTask.setEndDate(task.getEndDate());
+        existingTask.setAssignedUser(task.getAssignedUser());
+
+        // Remove old tags from the database if necessary
+        for (Tag tag : existingTask.getTags()) {
+            tagService.delete(tag.getId()); // Assuming delete method exists in tagService
+        }
+
+        // Clear the old tags from the existing task
+        existingTask.getTags().clear();
+
+        // Add new tags
+        List<Tag> updatedTags = task.getTags().stream()
+                .filter(Objects::nonNull)
+                .map(tagService::insert) // Ensure `insert` handles tag creation correctly
+                .collect(Collectors.toList());
+
+        existingTask.setTags(updatedTags); // Set the new tags
+
+        // Update the task in the repository
+        try {
+            return taskRepository.updateTask(existingTask);
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating task", e);
+        }
+    }
+
+
+/*
+    public Task updateTask(Task task) {
         if (task != null && task.getId() != null) {
             Task existingTask = taskRepository.findById(Math.toIntExact(task.getId()));
 
             if (existingTask != null) {
-                // Mettez à jour les attributs de la tâche
-                // Update other task fields
                 existingTask.setTitle(task.getTitle());
                 existingTask.setDescription(task.getDescription());
-                existingTask.setDate(task.getEndDate());
+                existingTask.setEndDate(task.getEndDate());
                 existingTask.setAssignedUser(task.getAssignedUser());
 
-                // Mettez à jour les tags
-                existingTask.getTags().clear(); // Effacez les anciens tags
+                existingTask.getTags().clear();
                 List<Tag> updatedTags = task.getTags().stream()
                         .filter(Objects::nonNull)
-                        .map(tagService::insert) // Assurez-vous que `insert` insère les nouveaux tags
+                        .map(tagService::insert)
                         .collect(Collectors.toList());
                 existingTask.setTags(updatedTags);
 
                 try {
                     return taskRepository.updateTask(existingTask);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error updating task", e);
+                }
+            } else {
+                throw new IllegalArgumentException("No task found with the provided ID");
+            }
+        }
+        throw new IllegalArgumentException("Task is invalid or missing ID");
+    }
+*/
+
+    public void validateTask(Task task) throws IllegalArgumentException {
+        if (task.getTitle() == null || task.getTitle().isEmpty()) {
+            throw new IllegalArgumentException("Le titre de la tâche est obligatoire.");
+        }
+
+        if (task.getStartDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La date de fin doit être dans le futur.");
+        }
+
+        // Vérifier qu'il y a au moins deux tags
+        if (task.getTags() == null || task.getTags().size() < 2) {
+            throw new IllegalArgumentException("La tâche doit avoir au moins deux tags.");
+        }
+
+        // Règle 3: Restreignez la planification des tâches à 3 jours à l'avance.
+        if (task.getStartDate().isAfter(LocalDate.now().plusDays(3))) {
+            throw new IllegalArgumentException("La tâche ne peut être planifiée que dans un délai de 3 jours.");
+        }
+
+        if (task.getEndDate().isBefore(task.getStartDate().plusDays(3))) {
+            throw new IllegalArgumentException("La durée de la tâche doit être d'au moins 3 jours.");
+        }
+
+        // Règle 4: Marquer une tâche comme terminée avant la date limite.
+        if (task.isCompleted() && task.getEndDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Une tâche ne peut pas être marquée comme terminée après la date limite.");
+        }
+
+       /* // Règle 5: Un utilisateur ne peut attribuer des tâches qu'à lui-même.
+        if (!task.getCreatedBy().equals(task.getAssignedUser())) {
+            throw new IllegalArgumentException("Vous ne pouvez attribuer des tâches qu'à vous-même.");
+        }*/
+    }
+
+    public Task updateStatus(Task task) {
+        if (task != null && task.getId() != null) {
+            Task existingTask = taskRepository.findById(Math.toIntExact(task.getId()));
+
+            if (existingTask != null) {
+                existingTask.setCompleted(!existingTask.isCompleted());
+
+                try {
+                    return taskRepository.updateStatus(existingTask);
                 } catch (Exception e) {
                     throw new RuntimeException("Error updating task", e);
                 }

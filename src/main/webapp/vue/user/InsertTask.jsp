@@ -51,6 +51,12 @@
             </div>
 
             <div>
+                <label for="startDate" class="block text-sm font-medium text-gray-700">Start date:</label>
+                <input type="date" id="startDate" name="startDate" required
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+
+            </div>
+            <div>
                 <label for="newTags">Nommer des tags (séparés par des virgules):</label>
                 <textarea id="newTags" name="tag" rows="3"
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"></textarea>
