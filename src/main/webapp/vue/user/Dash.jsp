@@ -101,6 +101,17 @@
                                     <span class="text-sm text-lime-400 font-bold pr-1">Refuser la tâche</span>
                                 </button>
                             </form>
+
+                            <form action="${pageContext.request.contextPath}/dashboard" method="POST">
+                                <input type="hidden" name="action" value="destroyTask">
+                                <input type="hidden" name="taskId" value="<%= task.getId() %>">
+                                <button title="Refuse Task"
+                                        class="cursor-pointer flex items-center fill-lime-400 bg-lime-950 hover:bg-lime-900 active:border active:border-lime-400 rounded-md duration-100 p-2"
+                                        <%= sessionUser.getToken().getDailyTokens() <= 0 ? "disabled" : "" %>>
+                                    <span class="text-sm text-lime-400 font-bold pr-1">Refuser la tâche</span>
+                                </button>
+                            </form>
+
                         </td>
 
                         <%
@@ -155,8 +166,6 @@
                                 <input type="hidden" name="action" value="Delete">
                                 <input type="hidden" name="taskId" value="<%= task.getId() %>">
                                 <button type="submit"
-
-                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?');"
                                         class="text-sm bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                                     Delete
                                 </button>

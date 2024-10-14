@@ -28,7 +28,7 @@ public class RequestRepository {
         return query.getResultList();
     }
 
-    public Optional<Request> findByTaskId(int id) {
+    public Optional<Request> findByTaskId(long id) {
         try {
             TypedQuery<Request> query = em.createQuery("SELECT r FROM Request r WHERE r.task.id = :id", Request.class);
             query.setParameter("id", id);

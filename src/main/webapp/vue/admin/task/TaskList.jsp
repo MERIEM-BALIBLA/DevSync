@@ -84,8 +84,6 @@
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="taskId" value="<%= task.getId() %>">
                         <button type="submit"
-
-                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?');"
                                 class="text-sm bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                             Delete
                         </button>

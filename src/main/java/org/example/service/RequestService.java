@@ -57,7 +57,7 @@ public class RequestService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<Request> findByTaskId(int id) {
+    public Optional<Request> findByTaskId(long id) {
         return requestRepository.findByTaskId(id);
     }
 

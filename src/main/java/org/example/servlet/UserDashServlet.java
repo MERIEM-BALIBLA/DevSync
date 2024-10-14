@@ -81,6 +81,9 @@ public class UserDashServlet extends HttpServlet {
         if ("refuseTask".equals(action)) {
             sendRequest(req, resp);
         }
+        if ("destroyTask".equals(action)) {
+            destroyTask(req, resp);
+        }
 
 
     }
@@ -199,6 +202,28 @@ public class UserDashServlet extends HttpServlet {
         if (id != null) {
             taskService.deleteTask(Integer.parseInt(id));
             resp.sendRedirect(req.getContextPath() + "/dashboard");
+        }
+    }
+
+    protected void destroyTask(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("taskId");
+        Task task = taskService.findById(Integer.parseInt(id));
+        Optional<Request> request = requestService.findByTaskId(task.getId());
+        User user = task.getAssignedUser();
+
+        if (request.isEmpty()) {
+            if (user.getToken().getMonthlyTokens() > 0) {
+                taskService.deleteTask(task.getId());
+                int newMonthlyTokens = user.getToken().getMonthlyTokens() - 1; // Réduire de 1
+                user.getToken().setMonthlyTokens(newMonthlyTokens); // Mettre à jour le nombre de jetons
+                tokenService.update(user.getToken());
+                resp.setStatus(HttpServletResponse.SC_OK);
+                resp.sendRedirect(req.getContextPath() + "/dashboard");
+            } else {
+                resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Insufficient monthly tokens.");
+            }
+        } else {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "There is an active request for this task.");
         }
     }
 

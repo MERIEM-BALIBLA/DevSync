@@ -73,7 +73,7 @@ public class TaskServlet extends HttpServlet {
     protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("taskId");
         if (id != null) {
-            taskService.deleteTask(Integer.parseInt(id));
+            taskService.deleteTask(Long.parseLong(id));
             resp.sendRedirect(req.getContextPath() + "/tasks");
         }
     }
@@ -166,9 +166,4 @@ public class TaskServlet extends HttpServlet {
         }
     }
 
-    protected void refuseTask(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String taskId = req.getParameter("id");
-        Task task = taskService.findById(Integer.parseInt(taskId));
-
-    }
 }

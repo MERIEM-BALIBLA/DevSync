@@ -6,6 +6,7 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import org.example.model.Tag;
 import org.example.model.Task;
+import org.example.model.User;
 import org.example.repository.interfaces.TaskInterface;
 
 import java.util.List;
@@ -38,20 +39,6 @@ public class TaskRepository implements TaskInterface {
         EntityManager em = getEntityManager();
         TypedQuery<Task> query = em.createQuery("SELECT t FROM Task t ORDER BY t.id desc ", Task.class);
         return query.getResultList();
-    }
-
-    public void deleteTask(int task_id) {
-        EntityManager em = getEntityManager();
-        try {
-            em.getTransaction().begin();
-            Task task = em.find(Task.class, task_id);
-            if (task != null) {
-                em.remove(task);
-                em.getTransaction().commit();
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public List<Task> getTasksByUserId(int userId) {
@@ -104,6 +91,17 @@ public class TaskRepository implements TaskInterface {
         return task;
     }
 
+    public void deleteTask(long userId) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        Task user = em.find(Task.class, userId);
+
+        if (user != null) {
+            em.remove(user);
+        }
+        em.getTransaction().commit();
+        em.close();
+    }
 
     public Task updateStatus(Task task) {
         Task editedTask = null;
