@@ -35,7 +35,7 @@
                         <button class="bg-pink-500 text-white py-1 px-3 rounded">Add a new user</button>
                     </a>
                 </div>
-                <table class="w-full text-md bg-white shadow-md rounded mb-4">
+                <table class="w-full text-md bg-white shadow-md rounded mb-4 text-sm font-medium">
                     <thead>
                     <tr class="border-b">
                         <th class="text-left p-3 px-5">ID</th>

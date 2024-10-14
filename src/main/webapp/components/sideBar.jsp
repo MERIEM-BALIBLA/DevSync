@@ -70,6 +70,9 @@
                 </button>
             </div>
             <nav class="flex flex-col flex-1 w-64 p-4 mt-4">
+                <a href="admin_dashboard">
+                    Home
+                </a>
                 <a href="userList">Users list</a>
                 <a href="${pageContext.request.contextPath}/tasks">Task List</a>
                 <a href="request">Request list</a>

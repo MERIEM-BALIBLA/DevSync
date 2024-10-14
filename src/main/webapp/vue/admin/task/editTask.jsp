@@ -20,7 +20,7 @@
     </a>
     <div class="bg-white p-8 rounded-lg shadow-md w-full">
         <div class="flex justify-center">
-            <h1 class="text-2xl font-bold mb-4">Add a new Task</h1>
+            <h1 class="text-2xl font-bold mb-4">Update Task</h1>
         </div>
 
         <div>
@@ -38,10 +38,10 @@
                   <textarea id="description" name="description" required
                             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
                   <%= task.getDescription() %></textarea>--%>
-                <label for="description"></label>
+                <label for="description">Description :</label>
                 <input id="description" name="description" required
-                                                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
-                                                        value="<%= task.getDescription() %>">
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                       value="<%= task.getDescription() %>">
 
                 <label for="endDate">Date d'échéance:</label>
                 <input type="date" id="endDate" name="endDate" required
@@ -49,8 +49,9 @@
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
 
                 <label for="assignedUserId">Utilisateur Assigné:</label>
-                <select id="assignedUserId" name="assignedUserId" required>
-                    <option value="">Sélectionnez un utilisateur</option>
+                <select
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                        id="assignedUserId" name="assignedUserId" required>
                     <%
                         List<User> users = (List<User>) request.getAttribute("users");
                         if (users != null && !users.isEmpty()) {
@@ -70,25 +71,31 @@
 
                 <div>
                     <label for="newTags">Nommer des tags (séparés par des virgules):</label>
-                   <%-- <textarea id="newTags" name="tag" rows="3"
-                              class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
-                         <%
-                             String tagTitles = task.getTags().stream()
-                                     .map(Tag::getTitle)
-                                     .collect(Collectors.joining(", "));
-                         %>
-                    <%= tagTitles %>
-                    </textarea>--%>
+                    <%-- <textarea id="newTags" name="tag" rows="3"
+                               class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+                          <%
+                              String tagTitles = task.getTags().stream()
+                                      .map(Tag::getTitle)
+                                      .collect(Collectors.joining(", "));
+                          %>
+                     <%= tagTitles %>
+                     </textarea>--%>
                     <%
                         String tagTitles = task.getTags().stream()
                                 .map(Tag::getTitle)
                                 .collect(Collectors.joining(", "));
                     %>
-                    <input id="newTags" name="tag" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                    <input id="newTags" name="tag"
+                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
                            value="<%= tagTitles %>">
 
                 </div>
-                <input type="submit" value="Modifier la Tâche">
+                <div class="flex justify-center mt-4">
+                    <button type="submit"
+                            class='relative w-1/3 inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-base text-pink-600 font-semibold rounded-lg group bg-gradient-to-br from-pink-500 to-pink-400 group-hover:from-pink-500 group-hover:to-pink-400 hover:text-white'>
+                        <span class='relative w-full py-2 px-5 transition-all ease-in duration-75 bg-white rounded-lg group-hover:bg-opacity-0'>Save changes</span>
+                    </button>
+                </div>
             </form>
         </div>
     </div>

@@ -86,9 +86,9 @@ public class RequestService {
                         taskService.updateTask(task);
 
                         Token dailyToken = user.getToken();
-                         dailyToken.setDailyTokens(dailyToken.getDailyTokens() - 1);
-                            tokenService.update(dailyToken);
-                            System.out.println("Token decremented for user: " + user.getUsername());
+                        dailyToken.setDailyTokens(dailyToken.getDailyTokens() - 1);
+                        tokenService.update(dailyToken);
+                        System.out.println("Token decremented for user: " + user.getUsername());
 
                         System.out.println("Assigned user updated to: " + task.getAssignedUser().getUsername());
                     } else {
@@ -103,29 +103,32 @@ public class RequestService {
     }
 
 
-/*
-    public void acceptRequest(int requestId, int assignedUserId, RequetStatus status) throws SQLException {
-        Optional<Request> requestItem = this.findById(requestId);
-        Request request = requestItem.get();
-        User user = request.getUser();
+    /*
+        public void acceptRequest(int requestId, int assignedUserId, RequetStatus status) throws SQLException {
+            Optional<Request> requestItem = this.findById(requestId);
+            Request request = requestItem.get();
+            User user = request.getUser();
 
-        request.setStatus(status);
-        if (status == RequetStatus.APPROVED) {
+            request.setStatus(status);
+            if (status == RequetStatus.APPROVED) {
 
-            Task task = taskService.findById(Math.toIntExact(request.getTask().getId()));
-            if (task != null) {
-                User assignedUser = userService.findById(assignedUserId);
-                if (assignedUser != null) {
-                    task.setAssignedUser(assignedUser);
-                    taskService.updateTask(task);
-                    tokenService.save(user.getToken().setDailyTokens(-1));
-                    System.out.println("Assigned user updated to: " + task.getAssignedUser().getUsername());
-                } else {
-                    System.out.println("Assigned user not found for ID: " + assignedUserId);
+                Task task = taskService.findById(Math.toIntExact(request.getTask().getId()));
+                if (task != null) {
+                    User assignedUser = userService.findById(assignedUserId);
+                    if (assignedUser != null) {
+                        task.setAssignedUser(assignedUser);
+                        taskService.updateTask(task);
+                        tokenService.save(user.getToken().setDailyTokens(-1));
+                        System.out.println("Assigned user updated to: " + task.getAssignedUser().getUsername());
+                    } else {
+                        System.out.println("Assigned user not found for ID: " + assignedUserId);
+                    }
                 }
             }
+            this.update(requestItem.get());
         }
-        this.update(requestItem.get());
+    */
+    public int count() {
+        return this.getAll().size();
     }
-*/
 }

@@ -57,4 +57,9 @@ public class UserService {
     public void close() {
         userRepository.close();
     }
+
+    public int count(){
+        return this.getAllUsers().size();
+    }
 }
+

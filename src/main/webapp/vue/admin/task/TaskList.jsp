@@ -15,17 +15,19 @@
 <%@ include file="../../../components/header.jsp" %>
 <%@ include file="../../../components/sideBar.jsp" %>
 
-<div class="text-gray-900 bg-gray-200">
+<div class="text-gray-900">
     <div class="p-4 flex">
-        <h1 class="text-3xl">
-            Users
+        <h1 class="text-3xl ">
+            TASKS LIST
         </h1>
     </div>
-    <a href="${pageContext.request.contextPath}/tasks?action=insertTask" class="mr-3">
-        <button class="bg-pink-500 text-white py-1 px-3 rounded">Add a new user</button>
-    </a>
+    <div class="flex justify-end">
+        <a href="${pageContext.request.contextPath}/tasks?action=insertTask" class="mr-3">
+            <button class="bg-pink-500 text-white py-1 px-3 rounded">Add a new Task</button>
+        </a>
+    </div>
     <div class="px-3 py-4 flex justify-center">
-        <table class="w-full text-md bg-white shadow-md rounded mb-4">
+        <table class="w-full text-md bg-white shadow-md rounded mb-4 text-sm font-medium">
             <tbody>
             <tr class="border-b">
                 <th class="text-left p-3 px-5">Title</th>
@@ -34,7 +36,6 @@
                 <th class="text-left p-3 px-5">End date</th>
                 <th class="text-left p-3 px-5">Assigned to</th>
                 <th class="text-left p-3 px-5">Status</th>
-                <th class="text-left p-3 px-5">Still confirmed</th>
                 <th class="text-left p-3 px-5">tags</th>
                 <th></th>
             </tr>
@@ -53,10 +54,13 @@
                 </td>
                 <td class="p-3 px-5"><%= task.getAssignedUser().getUsername() %>
                 </td>
-                <td class="p-3 px-5"><%= task.isCompleted() ? "completed" : "not completed" %>
-                </td>
-                <td class="p-3 px-5">
-                    <%= task.isConfirmed() ? "working on it" : "not confirmed" %>
+                <%--                <td class="p-3 px-5 font-medium" style="color: <%= task.isCompleted() ? "green bg-green-600" : "red" %>;">--%>
+                <%--                    <%= task.isCompleted() ? "completed" : "not completed" %>--%>
+                <%--                </td>--%>
+                <td class="p-3 px-5 font-medium">
+                    <div class=" p-1 rounded-md flex justify-center <%= task.isCompleted() ? "text-green-600 bg-green-100" : "text-red-600 bg-red-100" %>">
+                        <%= task.isCompleted() ? "completed" : "not completed" %>
+                    </div>
                 </td>
                 <td>
                     <%

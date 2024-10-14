@@ -29,9 +29,18 @@
 
             <div x-show="openTab === 1"
                  class="transition-all duration-300 p-4">
-                <div><%= sessionUser.getToken().getDailyTokens()%></div>
-                <div><%= sessionUser.getToken().getMonthlyTokens()%></div>
-                <table class="w-full text-md bg-white shadow-md rounded mb-4">
+                <div class="flex flex-col border founded-md bg-pink-200 items-left p-1 text-sm text-black font-bold">
+                    <div class="flex items-center">
+                        <p>Your Daily token : </p>
+                        <%= sessionUser.getToken().getDailyTokens()%>
+                    </div>
+
+                    <div class="flex items-center">
+                        <p>Your Monthly token : </p>
+                        <%= sessionUser.getToken().getMonthlyTokens()%>
+                    </div>
+                </div>
+                <table class="w-full text-md bg-white shadow-md rounded mb-4 text-sm font-medium">
                     <thead>
                     <tr class="border-b">
                         <th class="text-left p-3 px-5">Task title</th>
@@ -77,28 +86,28 @@
                             <%= task.isCompleted() ? "completed" : "not completed" %>
                         </td>
                         <td class="p-3 px-5 flex justify-end">
+
                             <form action="${pageContext.request.contextPath}/dashboard" method="POST">
                                 <input type="hidden" name="action" value="updateStatus">
                                 <input type="hidden" name="taskId" value="<%= task.getId() %>">
-
-                                <%-- Bouton de soumission avec style conditionnel --%>
                                 <input type="submit"
                                        value="<%= isCompleted ? "Completed" : (isNotCompletedAndPastDeadline ? "Not Completed (Past Deadline)" : "Not Completed") %>"
                                        class="mr-3 text-sm
-                              <%= isNotCompletedAndPastDeadline ? "bg-red-500" : "bg-blue-500" %>
+<%--                              <%= isNotCompletedAndPastDeadline ? "bg-orange-500" : "bg-blue-500" %>--%>
+                              <%= task.isCompleted() ? "bg-green-500" : (isNotCompletedAndPastDeadline ? "bg-orange-500" : "bg-red-500") %>
                               hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
-
                                 <input type="hidden" name="status" value="<%= isCompleted ? "undo" : "completed" %>">
                             </form>
+
                             <form action="${pageContext.request.contextPath}/dashboard" method="POST"
                                   onsubmit="return confirm('Êtes-vous sûr de vouloir refuser cette tâche ?');">
                                 <input type="hidden" name="action" value="refuseTask">
                                 <input type="hidden" name="taskId" value="<%= task.getId() %>">
 
                                 <button title="Refuse Task"
-                                        class="cursor-pointer flex items-center fill-lime-400 bg-lime-950 hover:bg-lime-900 active:border active:border-lime-400 rounded-md duration-100 p-2"
+                                        class="mr-3 text-sm hover:bg-blue-700 text-gray-500 py-1 px-2 rounded focus:outline-none focus:shadow-outline bg-red-200"
                                         <%= sessionUser.getToken().getDailyTokens() <= 0 ? "disabled" : "" %>>
-                                    <span class="text-sm text-lime-400 font-bold pr-1">Refuser la tâche</span>
+                                    <span class="text-sm text-lime-400 font-bold pr-1">Refuse</span>
                                 </button>
                             </form>
 
@@ -106,9 +115,9 @@
                                 <input type="hidden" name="action" value="destroyTask">
                                 <input type="hidden" name="taskId" value="<%= task.getId() %>">
                                 <button title="Refuse Task"
-                                        class="cursor-pointer flex items-center fill-lime-400 bg-lime-950 hover:bg-lime-900 active:border active:border-lime-400 rounded-md duration-100 p-2"
+                                        class="mr-3 text-sm hover:bg-blue-700 text-gray-500 py-1 px-2 rounded focus:outline-none focus:shadow-outline bg-red-200"
                                         <%= sessionUser.getToken().getDailyTokens() <= 0 ? "disabled" : "" %>>
-                                    <span class="text-sm text-lime-400 font-bold pr-1">Refuser la tâche</span>
+                                    <span class="text-sm text-lime-400 font-bold pr-1">Delete</span>
                                 </button>
                             </form>
 
@@ -130,14 +139,13 @@
                         <button class="bg-pink-500 text-white py-1 px-3 rounded">Add a new task</button>
                     </a>
                 </div>
-                <table class="w-full text-md bg-white shadow-md rounded mb-4">
+                <table class="w-full text-md bg-white shadow-md rounded mb-4 text-sm font-medium">
                     <thead>
                     <tr class="border-b">
                         <th class="text-left p-3 px-5">Task Title</th>
                         <th class="text-left p-3 px-5">Description</th>
                         <th class="text-left p-3 px-5">Start Date</th>
                         <th class="text-left p-3 px-5">End Date</th>
-                        <th class="text-left p-3 px-5">Status</th>
                         <th class="text-left p-3 px-5"></th>
                     </tr>
                     </thead>
@@ -158,8 +166,7 @@
                         </td>
                         <td class="p-3 px-5"><%= task.getEndDate() %>
                         </td>
-                        <td class="p-3 px-5"><%= task.isCompleted() ? "Completed" : "Not Completed" %>
-                        </td>
+
                         <td class="p-3 px-5 flex justify-end">
                             <form action="${pageContext.request.contextPath}/dashboard" method="post"
                                   style="display:inline;">

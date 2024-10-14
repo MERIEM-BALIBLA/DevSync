@@ -42,4 +42,8 @@ public class TagService {
     public void delete(int id) {
         tagRepository.delete(id);
     }
+
+    public int count(){
+        return this.getAllTag().size();
+    }
 }

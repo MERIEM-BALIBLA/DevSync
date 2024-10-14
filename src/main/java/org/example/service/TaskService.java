@@ -129,5 +129,36 @@ public class TaskService {
         throw new IllegalArgumentException("Task is invalid or missing ID");
     }
 
+    public List<Task> getTasksByManager() {
+        return taskRepository.getAllTask().stream()
+                .filter(e -> e.getCreatedBy().isManager())
+                .limit(5)
+                .collect(Collectors.toList());
+    }
+
+    public int count(List<Task> tasks){
+        return tasks.size();
+    }
+
+    public List<Task> filterTasksByPeriod(List<Task> tasks, String period) {
+        LocalDate now = LocalDate.now();
+        switch (period) {
+            case "week":
+                return tasks.stream()
+                        .filter(task -> task.getEndDate().isAfter(now.minusWeeks(1)))
+                        .collect(Collectors.toList());
+            case "month":
+                return tasks.stream()
+                        .filter(task -> task.getEndDate().isAfter(now.minusMonths(1)))
+                        .collect(Collectors.toList());
+            case "year":
+                return tasks.stream()
+                        .filter(task -> task.getEndDate().isAfter(now.minusYears(1)))
+                        .collect(Collectors.toList());
+            default:
+                return tasks;
+        }
+    }
+
 
 }

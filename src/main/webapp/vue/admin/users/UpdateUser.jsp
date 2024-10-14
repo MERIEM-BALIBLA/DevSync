@@ -6,11 +6,8 @@
 %>
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Mise à jour de l'utilisateur</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<%@ include file="../../../components/head.jsp" %>
 
-</head>
 <body class="bg-gray-100">
 <%@ include file="../../../components/header.jsp" %>
 <div class=" flex justify-center py-6 relative ">

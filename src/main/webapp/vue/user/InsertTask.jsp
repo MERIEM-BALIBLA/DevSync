@@ -9,7 +9,6 @@
 <%@ include file="../../components/head.jsp" %>
 <body>
 <%@ include file="../../components/header.jsp" %>
-<h1>Ajouter une nouvelle tâche</h1>
 
 <% if (request.getAttribute("errorMessage") != null) { %>
 <div style="color: red;">
@@ -18,9 +17,8 @@
 <% } %>
 <div class=" flex justify-center py-6 relative py-8 px-24">
 
-    <div class="bg-white p-8 rounded-lg shadow-md w-full">
-
-
+    <div class="bg-white px-8 py-4 rounded-lg shadow-md w-1/3 text-sm font-medium">
+        <h1 class="mb-2 text-xl">Add a sub Task</h1>
         <%
             // Retrieve the current user from the session
             User currentUser = (User) session.getAttribute("user");
@@ -62,12 +60,11 @@
                           class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"></textarea>
             </div>
 
-            <!-- Hidden field for the assigned user ID -->
             <input type="hidden" name="assignedUserId" value="<%= currentUser.getId() %>">
 
-            <div class="flex justify-center">
+            <div class="flex justify-center mt-4 w-full">
                 <button type="submit"
-                        class='relative w-1/3 inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-base text-pink-600 font-semibold rounded-lg group bg-gradient-to-br from-pink-500 to-pink-400 group-hover:from-pink-500 group-hover:to-pink-400 hover:text-white'>
+                        class='relative w-full inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-base text-pink-600 font-semibold rounded-lg group bg-gradient-to-br from-pink-500 to-pink-400 group-hover:from-pink-500 group-hover:to-pink-400 hover:text-white'>
                     <span class='relative w-full py-2 px-5 transition-all ease-in duration-75 bg-white rounded-lg group-hover:bg-opacity-0'>Save</span>
                 </button>
             </div>
