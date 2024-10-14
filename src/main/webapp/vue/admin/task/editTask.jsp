@@ -34,10 +34,14 @@
                 <input type="text" id="title" name="title" required value="<%= task.getTitle() %>"
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
 
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" required
-                          class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
-                <%= task.getDescription() %></textarea>
+                <%--  <label for="description">Description:</label>
+                  <textarea id="description" name="description" required
+                            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+                  <%= task.getDescription() %></textarea>--%>
+                <label for="description"></label>
+                <input id="description" name="description" required
+                                                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                                                        value="<%= task.getDescription() %>">
 
                 <label for="endDate">Date d'échéance:</label>
                 <input type="date" id="endDate" name="endDate" required
@@ -66,7 +70,7 @@
 
                 <div>
                     <label for="newTags">Nommer des tags (séparés par des virgules):</label>
-                    <textarea id="newTags" name="tag" rows="3"
+                   <%-- <textarea id="newTags" name="tag" rows="3"
                               class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
                          <%
                              String tagTitles = task.getTags().stream()
@@ -74,7 +78,15 @@
                                      .collect(Collectors.joining(", "));
                          %>
                     <%= tagTitles %>
-                    </textarea>
+                    </textarea>--%>
+                    <%
+                        String tagTitles = task.getTags().stream()
+                                .map(Tag::getTitle)
+                                .collect(Collectors.joining(", "));
+                    %>
+                    <input id="newTags" name="tag" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+                           value="<%= tagTitles %>">
+
                 </div>
                 <input type="submit" value="Modifier la Tâche">
             </form>

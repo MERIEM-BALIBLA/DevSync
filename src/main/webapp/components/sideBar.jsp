@@ -72,6 +72,7 @@
             <nav class="flex flex-col flex-1 w-64 p-4 mt-4">
                 <a href="userList">Users list</a>
                 <a href="${pageContext.request.contextPath}/tasks">Task List</a>
+                <a href="request">Request list</a>
             </nav>
             <div class="flex-shrink-0 p-4">
                 <a href="${pageContext.request.contextPath}/auth?action=logout">

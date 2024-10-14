@@ -6,11 +6,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.example.model.Tag;
-import org.example.model.Task;
-import org.example.model.User;
-import org.example.service.TagService;
-import org.example.service.TaskService;
+import org.example.model.*;
+import org.example.service.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,11 +18,15 @@ import java.util.Optional;
 @WebServlet("/dashboard")
 public class UserDashServlet extends HttpServlet {
     private final TaskService taskService;
-    private TagService tagService;
+    private final TagService tagService;
+    private final RequestService requestService;
+    private final TokenService tokenService;
 
     public UserDashServlet() {
         this.taskService = new TaskService();
         this.tagService = new TagService();
+        this.requestService = new RequestService();
+        this.tokenService = new TokenService();
     }
 
     @Override
@@ -37,7 +38,7 @@ public class UserDashServlet extends HttpServlet {
         }
 
         User user = (User) session.getAttribute("user");
-        String action = req.getParameter("action"); // Retrieve action parameter
+        String action = req.getParameter("action");
 
         if (user.isManager()) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès interdit.");
@@ -66,13 +67,22 @@ public class UserDashServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if (action.equals("InsertTask")) {
-            insertTask(req, resp);
-        } else if ("Delete".equals(action)) {
-            doDelete(req, resp);
-        } else if ("updateStatus".equals(action)) {
-            updateStatus(req, resp);
+        switch (action) {
+            case "InsertTask":
+                insertTask(req, resp);
+                break;
+            case "Delete":
+                delete(req, resp);
+                break;
+            case "updateStatus":
+                updateStatus(req, resp);
+                break;
         }
+        if ("refuseTask".equals(action)) {
+            sendRequest(req, resp);
+        }
+
+
     }
 
     private void insertTask(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
@@ -136,16 +146,6 @@ public class UserDashServlet extends HttpServlet {
         resp.sendRedirect(req.getContextPath() + "/dashboard");
     }
 
-
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String id = req.getParameter("taskId");
-        if (id != null) {
-            taskService.deleteTask(Integer.parseInt(id));
-            resp.sendRedirect(req.getContextPath() + "/dashboard");
-
-        }
-    }
-
     protected void updateStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String taskIdStr = req.getParameter("taskId");
         String status = req.getParameter("status");  // "completed" ou "undo"
@@ -166,53 +166,40 @@ public class UserDashServlet extends HttpServlet {
                         return;
                     }
                 } else if ("undo".equals(status)) {
-                    task.setCompleted(false);  // Annuler l'état "terminé"
-                }
-                taskService.updateStatus(task);
-                resp.sendRedirect(req.getContextPath() + "/dashboard");
-            } else {
-                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
-            }
-        } else {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
-        }
-    }
-
-/*
-    protected void updateStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String taskIdStr = req.getParameter("taskId");
-        String status = req.getParameter("status");  // status pourrait être "completed" ou "undo"
-
-        if (taskIdStr != null && !taskIdStr.isEmpty()) {
-            int taskId = Integer.parseInt(taskIdStr);
-
-            // Cherche la tâche en utilisant l'ID
-            Task task = taskService.findById(taskId);
-
-            if (task != null) {
-                // Si le statut est "completed", on la marque comme validée
-                if ("completed".equals(status)) {
-                    task.setCompleted(true);
-                }
-                // Si le statut est "undo", on la marque comme non validée
-                else if ("undo".equals(status)) {
                     task.setCompleted(false);
                 }
-
-                // Mise à jour de la tâche dans la base de données
                 taskService.updateStatus(task);
-
-                // Redirige vers la page de tableau de bord (ou la page des tâches)
                 resp.sendRedirect(req.getContextPath() + "/dashboard");
             } else {
-                // Si la tâche n'existe pas, renvoyer un message d'erreur
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Task not found");
             }
         } else {
-            // Si l'ID de tâche est manquant ou invalide
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid task ID");
         }
     }
-*/
+
+    protected void sendRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String taskId = req.getParameter("taskId");
+        Task task = taskService.findById((int) Long.parseLong(taskId));
+        if (task != null) {
+            User user = task.getAssignedUser();
+
+            if (user.getToken().getDailyTokens() > 0) {
+                Request request = new Request();
+                request.setUser(user);
+                request.setTask(task);
+                requestService.save(request);
+            }
+            resp.sendRedirect(req.getContextPath() + "/dashboard");
+        }
+    }
+
+    protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("taskId");
+        if (id != null) {
+            taskService.deleteTask(Integer.parseInt(id));
+            resp.sendRedirect(req.getContextPath() + "/dashboard");
+        }
+    }
 
 }

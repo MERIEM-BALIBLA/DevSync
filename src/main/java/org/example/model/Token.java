@@ -2,6 +2,8 @@ package org.example.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "tokens")
 public class Token {
@@ -10,21 +12,23 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-//    update
+    //    update
     @Column(name = "daily_tokens")
     private int dailyTokens;
 
-//    delete
+    //    delete
     @Column(name = "monthly_tokens")
     private int monthlyTokens;
 
+    @Column(name = "reset_date")
+    private LocalDate lastResetDate;
+
     public Token() {
-        this.dailyTokens = 2;
-        this.monthlyTokens = 1;
+
     }
 
     public int getId() {
@@ -37,6 +41,10 @@ public class Token {
 
     public User getUser() {
         return user;
+    }
+
+    public User setUser(User user) {
+        return this.user = user;
     }
 
     public int getDailyTokens() {
@@ -53,5 +61,13 @@ public class Token {
 
     public void setMonthlyTokens(int monthlyTokens) {
         this.monthlyTokens = monthlyTokens;
+    }
+
+    public LocalDate getLastResetDate() {
+        return lastResetDate;
+    }
+
+    public void setLastResetDate(LocalDate lastResetDate) {
+        this.lastResetDate = lastResetDate;
     }
 }

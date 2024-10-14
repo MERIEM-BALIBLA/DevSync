@@ -46,19 +46,11 @@ public class TaskRepository implements TaskInterface {
             em.getTransaction().begin();
             Task task = em.find(Task.class, task_id);
             if (task != null) {
-                em.remove(task); // Les associations dans task_tags seront supprimées
-            } else {
-                System.out.println("Tâche non trouvée avec l'ID : " + task_id);
+                em.remove(task);
+                em.getTransaction().commit();
             }
-            em.getTransaction().commit();
         } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            e.printStackTrace();
-            throw new RuntimeException("Erreur lors de la suppression de la tâche", e);
-        } finally {
-            em.close();
+            throw new RuntimeException(e);
         }
     }
 
@@ -85,11 +77,6 @@ public class TaskRepository implements TaskInterface {
         return tasks;
     }
 
-    /* public Task findById(int id) {
-         try (EntityManager em = getEntityManager()) {
-             return em.find(Task.class, id);
-         }
-     }*/
     public Task findById(int id) {
         EntityManager em = getEntityManager();
         try {
@@ -105,28 +92,18 @@ public class TaskRepository implements TaskInterface {
     }
 
     public Task updateTask(Task task) {
-        Task editedTask = null;
         EntityManager em = getEntityManager();
+        em.getTransaction().begin();
         try {
-            em.getTransaction().begin();
-            Task foundTask = em.find(Task.class, task.getId());
-            if (foundTask != null) {
-                foundTask.setTitle(task.getTitle());
-                foundTask.setDescription(task.getDescription());
-                foundTask.setEndDate(task.getEndDate());
-                foundTask.setAssignedUser(task.getAssignedUser());
-
-                editedTask = em.merge(foundTask);
-            }
+            em.merge(task);
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
             e.printStackTrace();
-        } finally {
-            em.close();
         }
-        return editedTask;
+        return task;
     }
+
 
     public Task updateStatus(Task task) {
         Task editedTask = null;

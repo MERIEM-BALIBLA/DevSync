@@ -27,7 +27,7 @@ public class Task {
     private LocalDate startDate;
     @ManyToOne
     @JoinColumn(name = "created_by", nullable = false)
-    private User createdBy; // Ajout de l'attribut createdBy
+    private User createdBy;
 
     @Column(nullable = false)
     private boolean completed;
@@ -42,7 +42,10 @@ public class Task {
     @Column(nullable = false)
     private boolean isConfirmed;
 
-    @ManyToMany(cascade = {CascadeType.MERGE})
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Request> requests = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
     @JoinTable(
             name = "task_tags",
             joinColumns = @JoinColumn(name = "task_id"),

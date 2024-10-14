@@ -63,20 +63,18 @@ public class TaskServlet extends HttpServlet {
             insertTask(req, resp);
         }
         if ("delete".equalsIgnoreCase(action)) {
-            doDelete(req, resp);
+            delete(req, resp);
         }
         if ("editTask".equals(action)) {
             editTask(req, resp);
         }
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("taskId");
         if (id != null) {
             taskService.deleteTask(Integer.parseInt(id));
             resp.sendRedirect(req.getContextPath() + "/tasks");
-
         }
     }
 
@@ -120,10 +118,7 @@ public class TaskServlet extends HttpServlet {
         newTask.setTags(tagsList);
 
         try {
-            // Valider la tâche avant de l'enregistrer
             taskService.validateTask(newTask);
-
-            // Si la validation passe, enregistrer la tâche
             taskService.save(newTask);
             resp.sendRedirect(req.getContextPath() + "/tasks");
         } catch (IllegalArgumentException e) {
@@ -143,7 +138,6 @@ public class TaskServlet extends HttpServlet {
         String[] tags = req.getParameter("tag").split("\\s*,\\s*"); // Split tags by commas and trim spaces
         List<Tag> tagsList = new ArrayList<>();
 
-        // Retrieve tags and check for null
         for (String titleTag : tags) {
             Tag tag = tagService.findByTitle(titleTag);
             if (tag == null) {
@@ -151,36 +145,15 @@ public class TaskServlet extends HttpServlet {
             }
             tagsList.add(tag);
         }
-
-        if (taskId == null || taskId.isEmpty()) {
-            req.setAttribute("errorMessage", "ID de tâche invalide.");
-            req.getRequestDispatcher("/vue/task/error.jsp").forward(req, resp);
-            return;
-        }
-
         long id = Long.parseLong(taskId);
-
         Task task = taskService.findById((int) id);
-
-        if (task == null) {
-            req.setAttribute("errorMessage", "Tâche non trouvée.");
-            req.getRequestDispatcher("/vue/task/error.jsp").forward(req, resp);
-            return;
-        }
-
         task.setTitle(title);
         task.setDescription(description);
         task.setEndDate(LocalDate.parse(endDate));
         task.setTags(tagsList);
 
-        // Vérification de l'utilisateur assigné
         UserService userService = new UserService();
         User assignedUser = userService.findById(Integer.parseInt(assignedUserId));
-        if (assignedUser == null) {
-            req.setAttribute("errorMessage", "Utilisateur non trouvé.");
-            req.getRequestDispatcher("/vue/task/error.jsp").forward(req, resp);
-            return;
-        }
 
         task.setAssignedUser(assignedUser);
         Task updatedTask = taskService.updateTask(task);
@@ -193,4 +166,9 @@ public class TaskServlet extends HttpServlet {
         }
     }
 
+    protected void refuseTask(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String taskId = req.getParameter("id");
+        Task task = taskService.findById(Integer.parseInt(taskId));
+
+    }
 }

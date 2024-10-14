@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="org.example.model.User" %>
-<%@ page import="org.example.model.enums.Role" %>
 
 <%
     User user = (User) request.getAttribute("user");

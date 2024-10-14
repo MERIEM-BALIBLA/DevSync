@@ -6,9 +6,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.example.model.Token;
 import org.example.model.User;
-import org.example.model.enums.Role;
-import org.example.repository.implementation.UserRepository;
+import org.example.service.TokenService;
 import org.example.service.UserService;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -18,10 +18,12 @@ import java.util.List;
 @WebServlet("/userList")
 public class UserServlet extends HttpServlet {
     private UserService userService;
+    private TokenService tokenService;
 
     @Override
     public void init() throws ServletException {
         userService = new UserService();
+        tokenService = new TokenService();
     }
 
     @Override
@@ -87,6 +89,9 @@ public class UserServlet extends HttpServlet {
 
             try {
                 userService.insertUser(user);
+               /* Token token = new Token();
+                token.setUser(userService.findById(user.getId()));
+                tokenService.save(token);*/
                 resp.sendRedirect("userList");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -98,7 +103,7 @@ public class UserServlet extends HttpServlet {
 
             if (userId != null) {
                 try {
-                    userService.deleteUser(Integer.parseInt(userId)); // Assurez-vous que deleteUser accepte un ID et supprime l'utilisateur
+                    userService.deleteUser(Integer.parseInt(userId));
                     resp.sendRedirect(req.getContextPath() + "/userList");
                 } catch (Exception e) {
                     e.printStackTrace();

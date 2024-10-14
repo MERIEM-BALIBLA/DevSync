@@ -70,78 +70,11 @@ public class TaskService {
     }
 
     public Task updateTask(Task task) {
-        if (task == null || task.getId() == null) {
-            throw new IllegalArgumentException("Task is invalid or missing ID");
-        }
-
-        // Retrieve the existing task
-        Task existingTask = taskRepository.findById(Math.toIntExact(task.getId()));
-
-        if (existingTask == null) {
-            throw new IllegalArgumentException("No task found with the provided ID");
-        }
-
-        // Update task fields
-        existingTask.setTitle(task.getTitle());
-        existingTask.setDescription(task.getDescription());
-        existingTask.setEndDate(task.getEndDate());
-        existingTask.setAssignedUser(task.getAssignedUser());
-
-        // Remove old tags from the database if necessary
-        for (Tag tag : existingTask.getTags()) {
-            tagService.delete(tag.getId()); // Assuming delete method exists in tagService
-        }
-
-        // Clear the old tags from the existing task
-        existingTask.getTags().clear();
-
-        // Add new tags
-        List<Tag> updatedTags = task.getTags().stream()
-                .filter(Objects::nonNull)
-                .map(tagService::insert) // Ensure `insert` handles tag creation correctly
-                .collect(Collectors.toList());
-
-        existingTask.setTags(updatedTags); // Set the new tags
-
-        // Update the task in the repository
-        try {
-            return taskRepository.updateTask(existingTask);
-        } catch (Exception e) {
-            throw new RuntimeException("Error updating task", e);
-        }
-    }
-
-
-/*
-    public Task updateTask(Task task) {
-        if (task != null && task.getId() != null) {
-            Task existingTask = taskRepository.findById(Math.toIntExact(task.getId()));
-
-            if (existingTask != null) {
-                existingTask.setTitle(task.getTitle());
-                existingTask.setDescription(task.getDescription());
-                existingTask.setEndDate(task.getEndDate());
-                existingTask.setAssignedUser(task.getAssignedUser());
-
-                existingTask.getTags().clear();
-                List<Tag> updatedTags = task.getTags().stream()
-                        .filter(Objects::nonNull)
-                        .map(tagService::insert)
-                        .collect(Collectors.toList());
-                existingTask.setTags(updatedTags);
-
-                try {
-                    return taskRepository.updateTask(existingTask);
-                } catch (Exception e) {
-                    throw new RuntimeException("Error updating task", e);
-                }
-            } else {
-                throw new IllegalArgumentException("No task found with the provided ID");
-            }
+        if (task != null && !task.equals(new Task())) {
+            return taskRepository.updateTask(task);
         }
         throw new IllegalArgumentException("Task is invalid or missing ID");
     }
-*/
 
     public void validateTask(Task task) throws IllegalArgumentException {
         if (task.getTitle() == null || task.getTitle().isEmpty()) {
@@ -152,14 +85,8 @@ public class TaskService {
             throw new IllegalArgumentException("La date de fin doit être dans le futur.");
         }
 
-        // Vérifier qu'il y a au moins deux tags
         if (task.getTags() == null || task.getTags().size() < 2) {
             throw new IllegalArgumentException("La tâche doit avoir au moins deux tags.");
-        }
-
-        // Règle 3: Restreignez la planification des tâches à 3 jours à l'avance.
-        if (task.getStartDate().isAfter(LocalDate.now().plusDays(3))) {
-            throw new IllegalArgumentException("La tâche ne peut être planifiée que dans un délai de 3 jours.");
         }
 
         if (task.getEndDate().isBefore(task.getStartDate().plusDays(3))) {
@@ -167,7 +94,13 @@ public class TaskService {
         }
 
         // Règle 4: Marquer une tâche comme terminée avant la date limite.
-        if (task.isCompleted() && task.getEndDate().isBefore(LocalDate.now())) {
+       /* if (task.isCompleted() && task.getEndDate().isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Une tâche ne peut pas être marquée comme terminée après la date limite.");
+        }*/
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = task.getEndDate();
+
+        if (task.isCompleted() && (endDate.isEqual(today) || endDate.isBefore(today))) {
             throw new IllegalArgumentException("Une tâche ne peut pas être marquée comme terminée après la date limite.");
         }
 

@@ -1,7 +1,6 @@
 package org.example.model;
 
 import jakarta.persistence.*;
-import org.example.model.enums.Role;
 
 import java.util.List;
 
@@ -24,11 +23,11 @@ public class User {
     @Column(name = "is_manager")
     private boolean isManager = false;
 
-    @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "assignedUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = false)
     private List<Task> tasks;
 
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Token token;
 
     public User() {
     }
@@ -77,5 +76,13 @@ public class User {
 
     public void setManager(boolean manager) {
         isManager = manager;
+    }
+
+    public Token getToken() {
+        return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
     }
 }
