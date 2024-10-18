@@ -45,27 +45,20 @@ public class Task {
     @OneToMany(mappedBy = "task", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Request> requests = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToMany(cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "task_tags",
             joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
+            inverseJoinColumns = @JoinColumn(name = "tag_id"),
+            uniqueConstraints = {
+                    @UniqueConstraint(
+                            columnNames = {"task_id", "tag_id"}
+                    )
+            }
     )
     private List<Tag> tags = new ArrayList<>();
 
     public Task() {
-        this.isConfirmed = true;
-    }
-
-    public Task(String title, String description, LocalDate endDate, LocalDate startDate,User assignedUser, User createdBy) {
-        this.title = title;
-        this.description = description;
-        this.endDate = endDate;
-        this.startDate = startDate;
-        this.assignedUser = assignedUser;
-        this.createdBy = createdBy;
-        this.createdAt = LocalDate.now();
-        this.completed = false;
         this.isConfirmed = true;
     }
 

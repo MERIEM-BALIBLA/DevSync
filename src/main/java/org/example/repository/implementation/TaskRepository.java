@@ -64,7 +64,7 @@ public class TaskRepository implements TaskInterface {
         return tasks;
     }
 
-    public Task findById(int id) {
+    public Task findById(Long id) {
         EntityManager em = getEntityManager();
         try {
             Task task = em.find(Task.class, id);
@@ -91,7 +91,7 @@ public class TaskRepository implements TaskInterface {
         return task;
     }
 
-    public void deleteTask(long userId) {
+   /* public void deleteTask(long userId) {
         EntityManager em = getEntityManager();
         em.getTransaction().begin();
         Task user = em.find(Task.class, userId);
@@ -101,6 +101,25 @@ public class TaskRepository implements TaskInterface {
         }
         em.getTransaction().commit();
         em.close();
+    }*/
+
+    public void deleteTask(long taskId) {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        try {
+            Task task = em.find(Task.class, taskId);
+            if (task != null) {
+                em.remove(task);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e; // or handle the exception as needed
+        } finally {
+            em.close();
+        }
     }
 
     public Task updateStatus(Task task) {

@@ -41,7 +41,7 @@ public class TaskServlet extends HttpServlet {
         } else if ("editTask".equals(action)) {
 
             String id = req.getParameter("id");
-            Task editTask = taskService.findById(Integer.parseInt(id));
+            Task editTask = taskService.findById(Long.valueOf(id));
             req.setAttribute("task", editTask);
             List<User> users = userService.getAllUsers();
             req.setAttribute("users", users);
@@ -86,8 +86,7 @@ public class TaskServlet extends HttpServlet {
         String startDateStr = req.getParameter("startDate");
         String assignedUserIdStr = req.getParameter("assignedUserId");
 
-
-        String[] tags = req.getParameter("tag").split("\\s*,\\s*"); // Split tags by commas and trim spaces
+        String[] tags = req.getParameter("tag").split("\\s*,\\s*");
         List<Tag> tagsList = new ArrayList<>();
 
         for (String titleTag : tags) {
@@ -146,7 +145,7 @@ public class TaskServlet extends HttpServlet {
             tagsList.add(tag);
         }
         long id = Long.parseLong(taskId);
-        Task task = taskService.findById((int) id);
+        Task task = taskService.findById(id);
         task.setTitle(title);
         task.setDescription(description);
         task.setEndDate(LocalDate.parse(endDate));

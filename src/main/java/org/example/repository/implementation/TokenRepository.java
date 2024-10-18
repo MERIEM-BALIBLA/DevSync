@@ -47,5 +47,15 @@ public class TokenRepository {
         }
     }*/
 
+    public Token userTokens(int userId) {
+        TypedQuery<Token> query = em.createQuery("SELECT t FROM Token t WHERE t.user.id = :userId", Token.class);
+        query.setParameter("userId", userId);
+        List<Token> tokens = query.getResultList();
+
+        // Vérifiez si une liste de jetons a été trouvée et renvoyez le premier, ou null si aucun jeton n'a été trouvé
+        return tokens.isEmpty() ? null : tokens.get(0);
+    }
+
+
 
 }

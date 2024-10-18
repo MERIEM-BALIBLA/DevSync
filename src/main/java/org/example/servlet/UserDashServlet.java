@@ -39,7 +39,6 @@ public class UserDashServlet extends HttpServlet {
 
         User user = (User) session.getAttribute("user");
         String action = req.getParameter("action");
-
         if (user.isManager()) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Accès interdit.");
             return;
@@ -55,6 +54,8 @@ public class UserDashServlet extends HttpServlet {
                 req.setAttribute("tasks", tasks);
                 List<Task> SousTasks = taskService.getSubTasks(user.getId());
                 req.setAttribute("sousTasks", SousTasks);
+                Token token = tokenService.userTokens(user);
+                req.setAttribute("token", token);
 
                 req.getRequestDispatcher("/vue/user/Dash.jsp").forward(req, resp);
             }
@@ -151,11 +152,11 @@ public class UserDashServlet extends HttpServlet {
 
     protected void updateStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String taskIdStr = req.getParameter("taskId");
-        String status = req.getParameter("status");  // "completed" ou "undo"
+        String status = req.getParameter("status");
 
         if (taskIdStr != null && !taskIdStr.isEmpty()) {
             int taskId = Integer.parseInt(taskIdStr);
-            Task task = taskService.findById(taskId);
+            Task task = taskService.findById((long) taskId);
 
             if (task != null) {
                 LocalDate currentDate = LocalDate.now();
@@ -183,7 +184,7 @@ public class UserDashServlet extends HttpServlet {
 
     protected void sendRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String taskId = req.getParameter("taskId");
-        Task task = taskService.findById((int) Long.parseLong(taskId));
+        Task task = taskService.findById(Long.valueOf(taskId));
         if (task != null) {
             User user = task.getAssignedUser();
 
@@ -199,25 +200,27 @@ public class UserDashServlet extends HttpServlet {
 
     protected void delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("taskId");
-        if (id != null) {
+        Task task = taskService.findById(Long.valueOf(id));
+        if (task.getAssignedUser().equals(task.getCreatedBy())) {
             taskService.deleteTask(Integer.parseInt(id));
-            resp.sendRedirect(req.getContextPath() + "/dashboard");
         }
+        resp.sendRedirect(req.getContextPath() + "/dashboard");
     }
 
     protected void destroyTask(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("taskId");
-        Task task = taskService.findById(Integer.parseInt(id));
+        Task task = taskService.findById(Long.valueOf(id));
         Optional<Request> request = requestService.findByTaskId(task.getId());
         User user = task.getAssignedUser();
 
         if (request.isEmpty()) {
             if (user.getToken().getMonthlyTokens() > 0) {
                 taskService.deleteTask(task.getId());
-                int newMonthlyTokens = user.getToken().getMonthlyTokens() - 1; // Réduire de 1
-                user.getToken().setMonthlyTokens(newMonthlyTokens); // Mettre à jour le nombre de jetons
+                int newMonthlyTokens = user.getToken().getMonthlyTokens() - 1;
+                user.getToken().setMonthlyTokens(newMonthlyTokens);
                 tokenService.update(user.getToken());
                 resp.setStatus(HttpServletResponse.SC_OK);
+                req.setAttribute("user", user);
                 resp.sendRedirect(req.getContextPath() + "/dashboard");
             } else {
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Insufficient monthly tokens.");

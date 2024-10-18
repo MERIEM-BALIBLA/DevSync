@@ -16,7 +16,7 @@ public class UserRepository implements UserInterface {
     }
 
     @Override
-    public void insertUser(User user) {
+   /* public void insertUser(User user) {
         EntityManager em = getEntityManager();
 
         try {
@@ -31,7 +31,25 @@ public class UserRepository implements UserInterface {
         } finally {
             em.close(); // Ferme l'EntityManager
         }
+    }*/
+    public User insertUser(User user) {
+        EntityManager em = getEntityManager();
+
+        try {
+            em.getTransaction().begin(); // Commence la transaction
+            em.persist(user); // Insère l'utilisateur
+            em.getTransaction().commit(); // Commit les changements
+            return user; // Retourne l'utilisateur inséré
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback(); // Annule la transaction en cas d'erreur
+            }
+            throw e; // Relancer l'exception pour gestion ultérieure
+        } finally {
+            em.close(); // Ferme l'EntityManager
+        }
     }
+
 
     @Override
     public List<User> getAllUsers() {

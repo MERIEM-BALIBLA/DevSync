@@ -1,21 +1,80 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--<persistence xmlns="https://jakarta.ee/xml/ns/persistence"-->
+<!--             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"-->
+<!--             version="3.0">-->
+<!--    <persistence-unit name="myJPAUnit">-->
+
+<!--        <class>org.example.model.Task</class>-->
+<!--        <class>org.example.model.User</class>-->
+<!--        <class>org.example.model.Tag</class>-->
+<!--        <class>org.example.model.Request</class>-->
+<!--        <class>org.example.model.Token</class>-->
+
+<!--        <properties>-->
+<!--            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>-->
+<!--            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/maven"/>-->
+<!--            <property name="jakarta.persistence.jdbc.user" value="meriem"/>-->
+<!--            <property name="jakarta.persistence.jdbc.password" value=""/>-->
+
+<!--            &lt;!&ndash; Equivalent to 'hibernate.dialect' &ndash;&gt;-->
+<!--            <property name="eclipselink.target-database" value="PostgreSQL"/>-->
+<!--            &lt;!&ndash; Equivalent to 'hibernate.hbm2ddl.auto' &ndash;&gt;-->
+<!--&lt;!&ndash;            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>&ndash;&gt;-->
+
+<!--            &lt;!&ndash; Or use &ndash;&gt;-->
+<!--            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>-->
+<!--            <property name="eclipselink.ddl-generation.output-mode" value="database"/>-->
+<!--            &lt;!&ndash; Equivalent to 'hibernate.show_sql' &ndash;&gt;-->
+<!--            <property name="eclipselink.logging.level.sql" value="FINE"/>-->
+<!--            &lt;!&ndash; Equivalent to 'hibernate.format_sql' &ndash;&gt;-->
+<!--            <property name="eclipselink.logging.format.sql" value="true"/>-->
+<!--            &lt;!&ndash; Equivalent to 'hibernate.use_sql_comments' &ndash;&gt;-->
+<!--            <property name="eclipselink.logging.parameters" value="true"/>-->
+<!--            &lt;!&ndash; Equivalent to 'hibernate.logging.level' &ndash;&gt;-->
+<!--            <property name="eclipselink.logging.level" value="FINE"/>-->
+
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
-    <persistence-unit name="myJPAUnit">
+
+    <persistence-unit name="myJPAUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Entity classes -->
         <class>org.example.model.Task</class>
         <class>org.example.model.User</class>
         <class>org.example.model.Tag</class>
+        <class>org.example.model.Request</class>
+        <class>org.example.model.Token</class>
+
         <properties>
+            <!-- Database connection settings -->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/maven"/>
             <property name="jakarta.persistence.jdbc.user" value="meriem"/>
             <property name="jakarta.persistence.jdbc.password" value=""/>
+
+            <!-- Hibernate specific properties -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.use_sql_comments" value="true"/>
+
+            <!-- Connection pool settings -->
+            <property name="hibernate.connection.pool_size" value="10"/>
+
+            <!-- Cache settings -->
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+
+            <!-- Statistics and debugging -->
+            <property name="hibernate.generate_statistics" value="true"/>
+            <property name="hibernate.session.events.log.LOG_QUERIES_SLOWER_THAN_MS" value="1"/>
         </properties>
     </persistence-unit>
 </persistence>
+<!--        </properties>-->
+<!--    </persistence-unit>-->
+<!--</persistence>-->

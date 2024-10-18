@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.model.Task" %>
 <%@ page import="java.time.LocalDate" %>
+<%@ page import="org.example.model.Token" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,7 +13,9 @@
 <body class="bg-gray-100">
 
 <%@ include file="../../components/header.jsp" %>
-
+<%
+    Token token = (Token) request.getAttribute("token");
+%>
 <div class="bg-gray-100 font-sans">
     <div x-data="{ openTab: 1 }" class="p-8">
         <div class="">
@@ -29,16 +32,33 @@
 
             <div x-show="openTab === 1"
                  class="transition-all duration-300 p-4">
-                <div class="flex flex-col border founded-md bg-pink-200 items-left p-1 text-sm text-black font-bold">
-                    <div class="flex items-center">
-                        <p>Your Daily token : </p>
-                        <%= sessionUser.getToken().getDailyTokens()%>
-                    </div>
+                <%-- <div class="flex flex-col border founded-md bg-pink-200 items-left p-1 text-sm text-black font-bold">
 
-                    <div class="flex items-center">
-                        <p>Your Monthly token : </p>
-                        <%= sessionUser.getToken().getMonthlyTokens()%>
-                    </div>
+                     <div class="flex items-center">
+                         <p>Your Daily token : </p>
+                         <%= sessionUser.getToken().getDailyTokens()%>
+                     </div>
+
+                     <div class="flex items-center">
+                         <p>Your Monthly token : </p>
+                         <%= sessionUser.getToken().getMonthlyTokens()%>
+                     </div>
+                 </div>--%>
+                <div class="flex flex-col border founded-md bg-pink-200 items-left p-1 text-sm text-black font-bold">
+                    <%
+                        if (token != null) {
+                    %>
+                    <p>Jetons quotidiens : <%= token.getDailyTokens() %>
+                    </p>
+                    <p>Jetons mensuels : <%= token.getMonthlyTokens() %>
+                    </p>
+                    <%
+                    } else {
+                    %>
+                    <p>Aucun token trouvé.</p>
+                    <%
+                        }
+                    %>
                 </div>
                 <table class="w-full text-md bg-white shadow-md rounded mb-4 text-sm font-medium">
                     <thead>
@@ -93,7 +113,7 @@
                                 <input type="submit"
                                        value="<%= isCompleted ? "Completed" : (isNotCompletedAndPastDeadline ? "Not Completed (Past Deadline)" : "Not Completed") %>"
                                        class="mr-3 text-sm
-<%--                              <%= isNotCompletedAndPastDeadline ? "bg-orange-500" : "bg-blue-500" %>--%>
+    <%--                              <%= isNotCompletedAndPastDeadline ? "bg-orange-500" : "bg-blue-500" %>--%>
                               <%= task.isCompleted() ? "bg-green-500" : (isNotCompletedAndPastDeadline ? "bg-orange-500" : "bg-red-500") %>
                               hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                                 <input type="hidden" name="status" value="<%= isCompleted ? "undo" : "completed" %>">

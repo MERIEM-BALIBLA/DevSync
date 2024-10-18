@@ -30,6 +30,8 @@
         <table class="w-full text-md bg-white shadow-md rounded mb-4 text-sm font-medium">
             <tbody>
             <tr class="border-b">
+                <th class="text-left p-3 px-5">Id</th>
+
                 <th class="text-left p-3 px-5">Title</th>
                 <th class="text-left p-3 px-5">Description</th>
                 <th class="text-left p-3 px-5">Start date</th>
@@ -44,6 +46,8 @@
                     for (Task task : tasks) {
             %>
             <tr class="border-b hover:bg-orange-100 bg-gray-100">
+                <td class="p-3 px-5  text-sm"><%= task.getId() %>
+                </td>
                 <td class="p-3 px-5  text-sm"><%= task.getTitle() %>
                 </td>
                 <td class="p-3 px-5 tx-sm"><%= task.getDescription() %>
@@ -84,7 +88,7 @@
                     <span>Task not available</span>
                     <% } %>
 
-                    <form action="${pageContext.request.contextPath}/tasks" method="post" style="display:inline;">
+                    <form action="${pageContext.request.contextPath}/tasks" method="post">
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="taskId" value="<%= task.getId() %>">
                         <button type="submit"

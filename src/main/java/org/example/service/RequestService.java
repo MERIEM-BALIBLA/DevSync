@@ -78,7 +78,7 @@ public class RequestService {
 
             request.setStatus(status);
             if (status == RequetStatus.APPROVED) {
-                Task task = taskService.findById(Math.toIntExact(request.getTask().getId()));
+                Task task = taskService.findById(request.getTask().getId());
                 if (task != null) {
                     User assignedUser = userService.findById(assignedUserId);
                     if (assignedUser != null) {

@@ -18,7 +18,7 @@ public class UserService {
         this.tokenService = new TokenService();
     }
 
-    public void insertUser(User user) {
+    public User insertUser(User user) {
         userRepository.insertUser(user);
         if (!user.isManager()) {
             Token token = new Token();
@@ -28,6 +28,7 @@ public class UserService {
             token.setLastResetDate(LocalDate.now());
             tokenService.save(token);
         }
+        return user;
     }
 
     public List<User> getAllUsers() {
@@ -58,7 +59,7 @@ public class UserService {
         userRepository.close();
     }
 
-    public int count(){
+    public int count() {
         return this.getAllUsers().size();
     }
 }

@@ -44,6 +44,7 @@ public class TaskService {
     }
 
     public void deleteTask(long task_id) {
+        System.out.println("Deleting task with ID: " + task_id);
         taskRepository.deleteTask(task_id);
     }
 
@@ -59,7 +60,7 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
-    public Task findById(int id) {
+    public Task findById(Long id) {
         Task task = taskRepository.findById(id);
 
         if (task == null) {
@@ -112,7 +113,7 @@ public class TaskService {
 
     public Task updateStatus(Task task) {
         if (task != null && task.getId() != null) {
-            Task existingTask = taskRepository.findById(Math.toIntExact(task.getId()));
+            Task existingTask = this.findById(task.getId());
 
             if (existingTask != null) {
                 existingTask.setCompleted(!existingTask.isCompleted());

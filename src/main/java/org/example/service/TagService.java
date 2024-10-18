@@ -4,18 +4,17 @@ import org.example.model.Tag;
 import org.example.model.Task;
 import org.example.repository.implementation.TagRepository;
 import org.example.repository.implementation.TaskRepository;
+import org.example.util.ExeptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TagService {
 
-    private TagRepository tagRepository;
-    private TaskRepository taskRepository;
+    private final TagRepository tagRepository;
 
     public TagService() {
         this.tagRepository = new TagRepository();
-        this.taskRepository = new TaskRepository();
     }
 
     public List<Tag> getAllTag() {
@@ -27,11 +26,14 @@ public class TagService {
     }
 
     public Tag findById(String tagId) {
-        Long id = Long.parseLong(tagId); // Assurez-vous que c'est le bon type
-        return tagRepository.findById(id); // Supposons que vous ayez cette méthode dans votre TagRepository
+        Long id = Long.parseLong(tagId);
+        return tagRepository.findById(id);
     }
 
     public Tag insert(Tag tag) {
+        if (tag==null){
+            throw new ExeptionHandler("the object is empty");
+        }
         return tagRepository.insert(tag);
     }
 

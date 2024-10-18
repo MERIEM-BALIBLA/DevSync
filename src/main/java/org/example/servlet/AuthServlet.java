@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.model.User;
-import org.example.repository.implementation.UserRepository;
 import org.example.service.UserService;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -60,17 +59,16 @@ public class AuthServlet extends HttpServlet {
         // Hachage du mot de passe
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-        // Création de l'utilisateur
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(hashedPassword);
 
-        userService.insertUser(user); // Assurez-vous que cette méthode ne lance pas d'exception
+        userService.insertUser(user);
 
         // Enregistrer l'utilisateur dans la session
-        req.getSession().setAttribute("user", user); // Enregistrer l'utilisateur dans la session
-        resp.sendRedirect(req.getContextPath() + "/dashboard"); // Redirige vers le tableau de bord
+        req.getSession().setAttribute("user", user);
+        resp.sendRedirect(req.getContextPath() + "/vue/auth/Login.jsp");
     }
 
 

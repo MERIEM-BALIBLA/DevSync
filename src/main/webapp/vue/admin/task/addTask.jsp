@@ -27,7 +27,7 @@
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
 
                 <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
-                <input type="text" id="description" name="title" required
+                <input type="text" id="description" name="description" required
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
 
 
