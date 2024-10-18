@@ -1,12 +1,9 @@
 package org.example.service;
 
 import org.example.model.Tag;
-import org.example.model.Task;
 import org.example.repository.implementation.TagRepository;
-import org.example.repository.implementation.TaskRepository;
 import org.example.util.ExeptionHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TagService {
