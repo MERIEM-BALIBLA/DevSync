@@ -9,8 +9,11 @@ import jakarta.servlet.http.HttpSession;
 import org.example.model.Tag;
 import org.example.model.Task;
 import org.example.model.User;
+import org.example.repository.implementation.TagRepository;
+import org.example.repository.implementation.UserRepository;
 import org.example.service.TagService;
 import org.example.service.TaskService;
+import org.example.service.TokenService;
 import org.example.service.UserService;
 
 import java.io.IOException;
@@ -26,8 +29,11 @@ public class TaskServlet extends HttpServlet {
 
     public TaskServlet() {
         this.taskService = new TaskService();
-        this.userService = new UserService();
-        this.tagService = new TagService();
+        UserRepository userRepository = new UserRepository();
+        TokenService tokenService = new TokenService();
+        this.userService = new UserService(userRepository, tokenService);
+        TagRepository tagRepository = new TagRepository();
+        this.tagService = new TagService(tagRepository);
     }
 
     @Override
@@ -151,7 +157,9 @@ public class TaskServlet extends HttpServlet {
         task.setEndDate(LocalDate.parse(endDate));
         task.setTags(tagsList);
 
-        UserService userService = new UserService();
+        UserRepository userRepository = new UserRepository();
+        TokenService tokenService = new TokenService();
+        UserService userService = new UserService(userRepository, tokenService);
         User assignedUser = userService.findById(Integer.parseInt(assignedUserId));
 
         task.setAssignedUser(assignedUser);

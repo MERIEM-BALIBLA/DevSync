@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.model.*;
+import org.example.repository.implementation.TagRepository;
 import org.example.service.*;
 
 import java.io.IOException;
@@ -24,7 +25,8 @@ public class UserDashServlet extends HttpServlet {
 
     public UserDashServlet() {
         this.taskService = new TaskService();
-        this.tagService = new TagService();
+        TagRepository tagRepository = new TagRepository();
+        this.tagService = new TagService(tagRepository);
         this.requestService = new RequestService();
         this.tokenService = new TokenService();
     }

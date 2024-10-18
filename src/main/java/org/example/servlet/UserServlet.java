@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.model.Token;
 import org.example.model.User;
+import org.example.repository.implementation.UserRepository;
 import org.example.service.TokenService;
 import org.example.service.UserService;
 import org.mindrot.jbcrypt.BCrypt;
@@ -22,7 +23,9 @@ public class UserServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        userService = new UserService();
+        UserRepository userRepository = new UserRepository();
+        TokenService tokenService = new TokenService();
+        userService = new UserService(userRepository, tokenService);
         tokenService = new TokenService();
     }
 

@@ -1,20 +1,17 @@
 
 package org.example.servlet;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.model.Request;
-import org.example.model.Task;
 import org.example.model.User;
 import org.example.model.enums.RequetStatus;
+import org.example.repository.implementation.UserRepository;
 import org.example.service.RequestService;
+import org.example.service.TokenService;
 import org.example.service.UserService;
 
 import java.io.IOException;
@@ -29,7 +26,9 @@ public class RequestServlet extends HttpServlet {
 
     public RequestServlet() {
         this.requestService = new RequestService();
-        this.userService = new UserService();
+        UserRepository userRepository = new UserRepository();
+        TokenService tokenService = new TokenService();
+        this.userService = new UserService(userRepository, tokenService);
     }
 
     @Override

@@ -20,6 +20,11 @@ public class Tag {
     public Tag() {
     }
 
+    public Tag(int id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
     public Tag(String title) {
         this.title = title;
     }

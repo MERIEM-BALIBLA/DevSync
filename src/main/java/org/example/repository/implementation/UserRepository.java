@@ -36,20 +36,19 @@ public class UserRepository implements UserInterface {
         EntityManager em = getEntityManager();
 
         try {
-            em.getTransaction().begin(); // Commence la transaction
-            em.persist(user); // Insère l'utilisateur
-            em.getTransaction().commit(); // Commit les changements
-            return user; // Retourne l'utilisateur inséré
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+            return user;
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback(); // Annule la transaction en cas d'erreur
+                em.getTransaction().rollback();
             }
-            throw e; // Relancer l'exception pour gestion ultérieure
+            throw e;
         } finally {
             em.close(); // Ferme l'EntityManager
         }
     }
-
 
     @Override
     public List<User> getAllUsers() {

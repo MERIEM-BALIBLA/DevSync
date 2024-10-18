@@ -8,10 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.model.Task;
 import org.example.model.User;
-import org.example.service.RequestService;
-import org.example.service.TagService;
-import org.example.service.TaskService;
-import org.example.service.UserService;
+import org.example.repository.implementation.TagRepository;
+import org.example.repository.implementation.UserRepository;
+import org.example.service.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,8 +24,11 @@ public class AdminDashServlet extends HttpServlet {
 
     public AdminDashServlet() {
         this.taskService = new TaskService();
-        this.tagService = new TagService();
-        this.userService = new UserService();
+        TagRepository tagRepository = new TagRepository();
+        this.tagService = new TagService(tagRepository);
+        UserRepository userRepository = new UserRepository();
+        TokenService tokenService = new TokenService();
+        this.userService = new UserService(userRepository, tokenService);
         this.requestService = new RequestService();
     }
 

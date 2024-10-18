@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.model.Token;
 import org.example.model.User;
 import org.example.repository.implementation.UserRepository;
+import org.example.util.ExeptionHandler;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,12 +13,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final TokenService tokenService;
 
-    public UserService() {
-        this.userRepository = new UserRepository();
-        this.tokenService = new TokenService();
+    public UserService(UserRepository userRepository, TokenService tokenService) {
+        this.userRepository = userRepository;
+        this.tokenService = tokenService;
     }
 
     public User insertUser(User user) {
+        if (user == null || user.equals(new User())) {
+            throw new ExeptionHandler("user null");
+        }
+        String normalizedEmail = user.getEmail().toLowerCase();
+        user.setEmail(normalizedEmail);
         userRepository.insertUser(user);
         if (!user.isManager()) {
             Token token = new Token();
@@ -37,6 +43,9 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<User> getAll() {
+        return userRepository.getAllUsers();
+    }
 
     public void deleteUser(int userId) {
         userRepository.deleteUser(userId);

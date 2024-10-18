@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Tag;
 import org.example.model.Task;
+import org.example.repository.implementation.TagRepository;
 import org.example.repository.implementation.TaskRepository;
 
 import java.time.LocalDate;
@@ -16,7 +17,8 @@ public class TaskService {
 
     public TaskService() {
         this.taskRepository = new TaskRepository();
-        this.tagService = new TagService();
+        TagRepository tagRepository = new TagRepository();
+        this.tagService = new TagService(tagRepository);
     }
 
     public List<Task> getAllTask() {

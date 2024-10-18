@@ -6,6 +6,7 @@ import org.example.model.Token;
 import org.example.model.User;
 import org.example.model.enums.RequetStatus;
 import org.example.repository.implementation.RequestRepository;
+import org.example.repository.implementation.UserRepository;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,7 +22,9 @@ public class RequestService {
     public RequestService() {
         this.requestRepository = new RequestRepository();
         this.taskService = new TaskService();
-        this.userService = new UserService();
+        UserRepository userRepository = new UserRepository();
+        TokenService tokenService = new TokenService();
+        this.userService = new UserService(userRepository, tokenService);
         this.tokenService = new TokenService();
     }
 
