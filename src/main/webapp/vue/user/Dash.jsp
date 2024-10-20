@@ -85,7 +85,7 @@
                         LocalDate deadline = task.getEndDate();
                         boolean isPastDeadline = currentDate.isAfter(deadline);
                         boolean isCompleted = task.isCompleted();
-                        boolean isNotCompletedAndPastDeadline = !isCompleted && isPastDeadline;
+                        boolean isNotCompletedAndPastDeadline = !isCompleted && (isPastDeadline || deadline.isEqual(LocalDate.now()));
 
                     %>
                     <tr class="border-b hover:bg-orange-100 bg-gray-100">
@@ -114,7 +114,7 @@
                                        value="<%= isCompleted ? "Completed" : (isNotCompletedAndPastDeadline ? "Not Completed (Past Deadline)" : "Not Completed") %>"
                                        class="mr-3 text-sm
     <%--                              <%= isNotCompletedAndPastDeadline ? "bg-orange-500" : "bg-blue-500" %>--%>
-                              <%= task.isCompleted() ? "bg-green-500" : (isNotCompletedAndPastDeadline ? "bg-orange-500" : "bg-red-500") %>
+                              <%= task.isCompleted() ? "bg-green-500" : (isNotCompletedAndPastDeadline ? "bg-yellow-500" : "bg-red-500") %>
                               hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                                 <input type="hidden" name="status" value="<%= isCompleted ? "undo" : "completed" %>">
                             </form>

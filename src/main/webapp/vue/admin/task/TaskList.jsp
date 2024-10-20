@@ -3,6 +3,7 @@
 <%@ page import="org.example.model.Task" %>
 <%@ page import="org.example.model.Tag" %>
 <%@ page import="java.util.stream.Collectors" %>
+<%@ page import="java.time.LocalDate" %>
 <html>
 <%@ include file="../../../components/head.jsp" %>
 
@@ -61,11 +62,25 @@
                 <%--                <td class="p-3 px-5 font-medium" style="color: <%= task.isCompleted() ? "green bg-green-600" : "red" %>;">--%>
                 <%--                    <%= task.isCompleted() ? "completed" : "not completed" %>--%>
                 <%--                </td>--%>
+                <%
+                    LocalDate currentDate = LocalDate.now();
+                    LocalDate deadline = task.getEndDate();
+                    boolean isPastDeadline = currentDate.isAfter(deadline);
+                    boolean isCompleted = task.isCompleted();
+
+                    // Determine the status
+                    boolean isNotCompleted = !isCompleted;
+                    boolean isDeadlineToday = deadline.isEqual(currentDate);
+
+                    // Task is considered not completed if either it's not completed or if the deadline is today
+                    boolean shouldShowAsNotCompleted = isNotCompleted || isDeadlineToday;
+                %>
                 <td class="p-3 px-5 font-medium">
-                    <div class=" p-1 rounded-md flex justify-center <%= task.isCompleted() ? "text-green-600 bg-green-100" : "text-red-600 bg-red-100" %>">
-                        <%= task.isCompleted() ? "completed" : "not completed" %>
+                    <div class="p-1 rounded-md flex justify-center <%= shouldShowAsNotCompleted ? "text-red-600 bg-red-100" : "text-green-600 bg-green-100" %>">
+                        <%= shouldShowAsNotCompleted ? "not completed" : "completed" %>
                     </div>
                 </td>
+
                 <td>
                     <%
                         String tagTitles = task.getTags().stream()

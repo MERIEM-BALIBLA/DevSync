@@ -105,10 +105,6 @@ public class TaskService {
             throw new IllegalArgumentException("Une tâche ne peut pas être marquée comme terminée après la date limite.");
         }
 
-       /* // Règle 5: Un utilisateur ne peut attribuer des tâches qu'à lui-même.
-        if (!task.getCreatedBy().equals(task.getAssignedUser())) {
-            throw new IllegalArgumentException("Vous ne pouvez attribuer des tâches qu'à vous-même.");
-        }*/
     }
 
     public Task updateStatus(Task task) {
@@ -137,6 +133,7 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
+//    -----------------------------------------------------------
     public int count(List<Task> tasks){
         return tasks.size();
     }
