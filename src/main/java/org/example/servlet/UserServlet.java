@@ -92,9 +92,6 @@ public class UserServlet extends HttpServlet {
 
             try {
                 userService.insertUser(user);
-               /* Token token = new Token();
-                token.setUser(userService.findById(user.getId()));
-                tokenService.save(token);*/
                 resp.sendRedirect("userList");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -115,15 +112,17 @@ public class UserServlet extends HttpServlet {
         } else if ("edit".equals(action)) {
             String userId = req.getParameter("userId");
             String username = req.getParameter("username");
+            String password = req.getParameter("password");
             String email = req.getParameter("email");
             String role = req.getParameter("role");
             boolean isManager = "ADMIN".equals(role);
-//            String password = req.getParameter("password");
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
             User user = new User();
             user.setId(Integer.parseInt(userId));
             user.setUsername(username);
             user.setEmail(email);
+            user.setPassword(hashedPassword);
             user.setManager(isManager);
 
             try {

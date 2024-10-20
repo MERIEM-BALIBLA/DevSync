@@ -25,8 +25,8 @@ import java.util.List;
 public interface UserInterface {
     User insertUser(User user);
     List<User> getAllUsers();
-    void deleteUser(int userId);
-    void updateUser(User user);
+    boolean deleteUser(int userId);
+    User updateUser(User user);
     User findById(int userId);
     User findByEmail(String email);
     void close();

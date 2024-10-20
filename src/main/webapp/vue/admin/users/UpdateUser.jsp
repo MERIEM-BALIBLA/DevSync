@@ -33,6 +33,11 @@
                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
             </div>
             <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-700">New password:</label>
+                <input type="email" id="password" name="password" required value="<%= user.getPassword() %>"
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">
+            </div>
+            <div class="mb-4">
                 <label for="role" class="block text-sm font-medium text-gray-700">Role:</label>
                 <select id="role" name="role" required
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-200">

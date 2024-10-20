@@ -59,7 +59,7 @@ public class UserRepository implements UserInterface {
     }
 
     @Override
-    public void deleteUser(int userId) {
+    public boolean deleteUser(int userId) {
         EntityManager em = entityManagerFactory.createEntityManager();
         em.getTransaction().begin();
 
@@ -70,10 +70,11 @@ public class UserRepository implements UserInterface {
 
         em.getTransaction().commit();
         em.close();
+        return false;
     }
 
     @Override
-    public void updateUser(User user) {
+    public User updateUser(User user) {
         EntityManager em = getEntityManager();
 
         try {
@@ -97,6 +98,7 @@ public class UserRepository implements UserInterface {
         } finally {
             em.close(); // Ferme l'EntityManager
         }
+        return user;
     }
 
     @Override

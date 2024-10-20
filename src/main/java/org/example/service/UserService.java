@@ -19,11 +19,27 @@ public class UserService {
     }
 
     public User insertUser(User user) {
-        if (user == null || user.equals(new User())) {
-            throw new ExeptionHandler("user null");
+//        if (user == null || user.equals(new User())) {
+        if (user == null || user.getEmail() == null || user.getEmail().isEmpty() || user.getUsername() == null || user.getPassword() == null) {
+            throw new ExeptionHandler("user null or missing required fields");
         }
+        if (this.findByEmail(user.getEmail()) != null) {
+            throw new ExeptionHandler("user already exist");
+        }
+
         String normalizedEmail = user.getEmail().toLowerCase();
         user.setEmail(normalizedEmail);
+        int userId = user.getId();
+
+        String newEmail = user.getEmail();
+        boolean emailExists = this.getAllUsers().stream()
+                .filter(u -> u.getId() != userId)
+                .anyMatch(u -> u.getEmail().equals(newEmail));
+
+        if (emailExists) {
+            throw new ExeptionHandler("Email already exists");
+        }
+
         userRepository.insertUser(user);
         if (!user.isManager()) {
             Token token = new Token();
@@ -47,15 +63,24 @@ public class UserService {
         return userRepository.getAllUsers();
     }
 
-    public void deleteUser(int userId) {
-        userRepository.deleteUser(userId);
+    public boolean deleteUser(int userId) {
+        if (userId <= 0) { // Check for invalid userId
+            throw new ExeptionHandler("The id of user is null or invalid!!");
+        }
+        return userRepository.deleteUser(userId);
     }
 
-    public void updateUser(User user) {
-        userRepository.updateUser(user);
+    public User updateUser(User user) {
+        if (user == null || user.getUsername().isEmpty() || user.getEmail().isEmpty() || user.getPassword().isEmpty()) {
+            throw new ExeptionHandler("Please verify users Infromations ");
+        }
+        return userRepository.updateUser(user);
     }
 
     public User findById(int userId) {
+        if (userId == 0) {
+            throw new ExeptionHandler("Invalid id");
+        }
         return userRepository.findById(userId);
     }
 
